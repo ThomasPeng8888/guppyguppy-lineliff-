@@ -21,6 +21,7 @@
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -80,6 +81,7 @@
       color: var(--muted);
       font-size: 13px;
       padding: 12px 0 6px;
+      white-space: pre-line;
     }
 
     .card {
@@ -246,7 +248,7 @@
       border-left: 16px solid transparent;
       border-right: 16px solid transparent;
       border-top: 28px solid #ff6d00;
-      z-index: 5;
+      z-index: 6;
       filter: drop-shadow(0 3px 4px rgba(0,0,0,0.18));
     }
 
@@ -269,6 +271,24 @@
       );
     }
 
+    @keyframes wheelPendingSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .wheel.pending-spin {
+      animation: wheelPendingSpin 0.45s linear infinite;
+      filter: saturate(1.08) brightness(1.03);
+    }
+
+    .wheel.is-winning {
+      box-shadow:
+        0 0 0 10px rgba(255,255,255,0.5),
+        0 0 24px rgba(244,180,0,0.65),
+        0 0 56px rgba(255,193,7,0.35),
+        0 12px 34px rgba(0,0,0,0.16);
+    }
+
     .wheel-center {
       position: absolute;
       inset: 50%;
@@ -277,13 +297,31 @@
       transform: translate(-50%, -50%);
       background: #fff;
       border-radius: 50%;
-      z-index: 4;
+      z-index: 7;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
       color: var(--brand-color);
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      transition: 0.25s ease;
+      text-align: center;
+      padding: 8px;
+      line-height: 1.1;
+    }
+
+    .wheel-center.is-spinning {
+      background: linear-gradient(135deg, #fff7e6, #ffffff);
+      color: #d97706;
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 0 0 0 10px rgba(255, 193, 7, 0.12), 0 8px 28px rgba(0,0,0,0.18);
+    }
+
+    .wheel-center.is-win {
+      background: linear-gradient(135deg, #fff3cd, #ffffff);
+      color: #b45309;
+      transform: translate(-50%, -50%) scale(1.08);
+      box-shadow: 0 0 0 14px rgba(255, 215, 0, 0.18), 0 10px 32px rgba(0,0,0,0.2);
     }
 
     .wheel-label {
@@ -299,6 +337,14 @@
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
       z-index: 3;
       line-height: 1.3;
+      pointer-events: none;
+    }
+
+    .spin-hint {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 18px;
     }
 
     .prize-list {
@@ -327,6 +373,28 @@
       line-height: 1.7;
       text-align: center;
       font-size: 14px;
+    }
+
+    .flash-effect {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.38) 28%, rgba(255,255,255,0) 68%);
+      transform: scale(0.86);
+    }
+
+    @keyframes resultFlash {
+      0%   { opacity: 0; transform: scale(0.86); }
+      25%  { opacity: 0.95; transform: scale(1.06); }
+      100% { opacity: 0; transform: scale(1.22); }
+    }
+
+    .flash-effect.show {
+      animation: resultFlash 0.95s ease-out forwards;
     }
 
     .footer-text {
@@ -382,13 +450,18 @@
           <div id="lotteryView" class="hidden">
             <div class="card wheel-panel">
               <div class="section-label" style="color:#6d8382;">會員轉盤抽獎</div>
-              <div class="help-text">每次抽獎消耗 6 點，抽獎結果會同步寫入 Google Sheet，並通知會員與管理員。</div>
+              <div class="help-text">每次抽獎消耗 6 點，轉盤轉完後才會顯示中獎結果，並同步通知會員與管理員。</div>
 
               <div class="wheel-wrapper">
                 <div class="pointer"></div>
+                <div id="flashEffect" class="flash-effect"></div>
                 <div id="wheel" class="wheel"></div>
-                <div class="wheel-center">抽獎</div>
+                <div id="wheelCenter" class="wheel-center">
+                  <span id="wheelCenterText">抽獎</span>
+                </div>
               </div>
+
+              <div id="spinHint" class="spin-hint">點擊下方按鈕開始抽獎</div>
 
               <button id="spinBtn" class="btn btn-danger">立即抽獎（扣 6 點）</button>
               <button id="backHomeBtn" class="btn btn-ghost">返回會員首頁</button>
@@ -447,6 +520,7 @@
     let prizeData = [];
     let currentRotation = 0;
     let spinning = false;
+    let winAudioContext = null;
 
     async function init() {
       try {
@@ -455,18 +529,13 @@
           liff.login();
           return;
         }
-    
+
         currentProfile = await liff.getProfile();
         const params = new URLSearchParams(location.search);
         const act = params.get('act');
-    
-        // 顯示目前登入者資訊，方便你複製到 Staff 表
-        document.getElementById('status').innerText =
-          `您好，${currentProfile.displayName}\nuserId：${currentProfile.userId}`;
-    
-        console.log("LINE displayName:", currentProfile.displayName);
-        console.log("LINE userId:", currentProfile.userId);
-    
+
+        document.getElementById('status').innerText = `您好，${currentProfile.displayName}`;
+
         if (act === 'staff_add') {
           await initStaffMode(params);
         } else {
@@ -495,9 +564,13 @@
       };
 
       document.getElementById('backHomeBtn').onclick = () => {
+        if (spinning) return;
         document.getElementById('lotteryView').classList.add('hidden');
         document.getElementById('memberHome').classList.remove('hidden');
         document.getElementById('lotteryResult').classList.add('hidden');
+        document.getElementById('lotteryResult').innerHTML = '';
+        resetWheelCenter();
+        setSpinHint('點擊下方按鈕開始抽獎');
       };
 
       document.getElementById('spinBtn').onclick = spinLottery;
@@ -636,6 +709,142 @@
       });
     }
 
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function setSpinHint(text) {
+      document.getElementById('spinHint').innerText = text || '';
+    }
+
+    function setWheelCenterText(text) {
+      document.getElementById('wheelCenterText').innerText = text;
+    }
+
+    function setWheelCenterSpinning() {
+      document.getElementById('wheelCenter').classList.add('is-spinning');
+      document.getElementById('wheelCenter').classList.remove('is-win');
+      setWheelCenterText('抽獎中');
+    }
+
+    function setWheelCenterWin() {
+      document.getElementById('wheelCenter').classList.remove('is-spinning');
+      document.getElementById('wheelCenter').classList.add('is-win');
+      setWheelCenterText('恭喜');
+    }
+
+    function resetWheelCenter() {
+      document.getElementById('wheelCenter').classList.remove('is-spinning');
+      document.getElementById('wheelCenter').classList.remove('is-win');
+      setWheelCenterText('抽獎');
+    }
+
+    function startPendingSpin() {
+      const wheel = document.getElementById('wheel');
+      wheel.classList.remove('is-winning');
+      wheel.classList.add('pending-spin');
+      wheel.style.transition = 'none';
+      setWheelCenterSpinning();
+      setSpinHint('抽獎中，請稍候...');
+    }
+
+    function stopPendingSpin() {
+      const wheel = document.getElementById('wheel');
+      wheel.classList.remove('pending-spin');
+      wheel.style.transition = 'transform 5.2s cubic-bezier(0.17, 0.67, 0.18, 1.02)';
+      wheel.style.transform = `rotate(${currentRotation}deg)`;
+      void wheel.offsetWidth;
+    }
+
+    async function animateWheelToPrize(prizeIndex) {
+      const wheel = document.getElementById('wheel');
+
+      stopPendingSpin();
+      await sleep(60);
+
+      const centerAngle = prizeIndex * 60 + 30;
+      const target = 360 - centerAngle;
+      currentRotation += 360 * 6 + target;
+
+      wheel.style.transform = `rotate(${currentRotation}deg)`;
+      setSpinHint('轉盤轉動中...');
+      await sleep(5400);
+    }
+
+    function playWinFlash() {
+      const flash = document.getElementById('flashEffect');
+      const wheel = document.getElementById('wheel');
+
+      flash.classList.remove('show');
+      wheel.classList.remove('is-winning');
+      void flash.offsetWidth;
+
+      flash.classList.add('show');
+      wheel.classList.add('is-winning');
+
+      setTimeout(() => {
+        flash.classList.remove('show');
+      }, 980);
+
+      setTimeout(() => {
+        wheel.classList.remove('is-winning');
+      }, 1800);
+    }
+
+    function playWinSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+
+        if (!winAudioContext) {
+          winAudioContext = new AudioCtx();
+        }
+
+        if (winAudioContext.state === 'suspended') {
+          winAudioContext.resume();
+        }
+
+        const notes = [880, 1174.66, 1567.98];
+        let start = winAudioContext.currentTime;
+
+        notes.forEach((freq) => {
+          const osc = winAudioContext.createOscillator();
+          const gain = winAudioContext.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, start);
+
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(0.08, start + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
+
+          osc.connect(gain);
+          gain.connect(winAudioContext.destination);
+
+          osc.start(start);
+          osc.stop(start + 0.24);
+
+          start += 0.12;
+        });
+      } catch (err) {
+        console.error('音效播放失敗', err);
+      }
+    }
+
+    async function triggerNotify(spinId) {
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'spin_lottery_notify',
+            spinId: spinId
+          })
+        });
+      } catch (notifyErr) {
+        console.error('通知發送失敗', notifyErr);
+      }
+    }
+
     async function spinLottery() {
       if (spinning) return;
       if ((memberData.currentPoints || 0) < LOTTERY_COST) {
@@ -645,50 +854,79 @@
       if (!confirm(`確定要消耗 ${LOTTERY_COST} 點進行抽獎嗎？`)) return;
 
       spinning = true;
+
       const btn = document.getElementById('spinBtn');
+      const backBtn = document.getElementById('backHomeBtn');
+      const resultBox = document.getElementById('lotteryResult');
+
       btn.disabled = true;
+      backBtn.disabled = true;
       btn.innerText = '抽獎中...';
+      resultBox.classList.add('hidden');
+      resultBox.innerHTML = '';
+
+      startPendingSpin();
 
       try {
-        const res = await fetch(SCRIPT_URL, {
+        const preparePromise = fetch(SCRIPT_URL, {
           method: 'POST',
           body: JSON.stringify({
-            action: 'spin_lottery',
+            action: 'spin_lottery_prepare',
             userId: currentProfile.userId,
             displayName: currentProfile.displayName
           })
-        });
-        const result = await res.json();
+        }).then(res => res.json());
+
+        await sleep(900);
+        const result = await preparePromise;
 
         if (!result.ok) {
+          stopPendingSpin();
+          resetWheelCenter();
+          setSpinHint('抽獎失敗，請稍後再試');
           alert(result.message || '抽獎失敗');
           spinning = false;
+          backBtn.disabled = false;
+          await loadMemberProfile();
           renderMemberProfile();
           return;
         }
 
-        animateWheelToPrize(result.prizeIndex);
-        setTimeout(async () => {
-          document.getElementById('lotteryResult').classList.remove('hidden');
-          document.getElementById('lotteryResult').innerHTML = `🎉 恭喜抽中：<strong>${escapeHtml(result.prizeName)}</strong><br>已扣除 ${result.costPoints} 點，目前剩餘 ${result.currentPoints} 點。`;
-          await loadMemberProfile();
-          renderMemberProfile();
-          spinning = false;
-        }, 5400);
+        await animateWheelToPrize(result.prizeIndex);
+
+        setWheelCenterWin();
+        playWinFlash();
+        playWinSound();
+        setSpinHint('恭喜中獎！');
+
+        resultBox.classList.remove('hidden');
+        resultBox.innerHTML =
+          `🎉 恭喜抽中：<strong>${escapeHtml(result.prizeName)}</strong><br>` +
+          `已扣除 ${result.costPoints} 點，目前剩餘 ${result.currentPoints} 點。`;
+
+        await sleep(650);
+        await triggerNotify(result.spinId);
+
+        await loadMemberProfile();
+        renderMemberProfile();
+
+        await sleep(900);
+        resetWheelCenter();
+        setSpinHint('通知已送出，可再次抽獎或返回首頁');
+
+        spinning = false;
+        backBtn.disabled = false;
       } catch (err) {
         console.error(err);
+        stopPendingSpin();
+        resetWheelCenter();
+        setSpinHint('通訊失敗，請稍後再試');
         alert('通訊失敗，請稍後再試');
         spinning = false;
+        backBtn.disabled = false;
+        await loadMemberProfile();
         renderMemberProfile();
       }
-    }
-
-    function animateWheelToPrize(prizeIndex) {
-      const wheel = document.getElementById('wheel');
-      const centerAngle = prizeIndex * 60 + 30;
-      const target = 360 - centerAngle;
-      currentRotation += 360 * 6 + target;
-      wheel.style.transform = `rotate(${currentRotation}deg)`;
     }
 
     function escapeHtml(str) {
