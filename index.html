@@ -21,7 +21,6 @@
       --gold: #ffd54f;
       --gold-soft: #fff7cc;
       --line: #e7f0f0;
-      --tab-bg: #ffffff;
       --tab-active: #0e5f5c;
       --tab-inactive: #7a8f8e;
     }
@@ -39,7 +38,7 @@
     .page {
       max-width: 460px;
       margin: 0 auto;
-      padding: 18px 14px 110px;
+      padding: 18px 14px 112px;
     }
 
     .shell {
@@ -436,7 +435,7 @@
       margin-top: 14px;
     }
 
-    .prize-item, .coupon-item {
+    .prize-item {
       background: #f8fcfc;
       border: 1px solid #e7f0f0;
       border-radius: 12px;
@@ -444,14 +443,12 @@
       text-align: left;
     }
 
-    .prize-item strong,
-    .coupon-item strong {
+    .prize-item strong {
       display: block;
       font-size: 14px;
     }
 
-    .prize-item span,
-    .coupon-item span {
+    .prize-item span {
       display: block;
       font-size: 12px;
       color: var(--muted);
@@ -477,49 +474,270 @@
       background: #fbfefe;
     }
 
+    .coupon-ticket {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fffef9 0%, #fffdfa 100%);
+      border: 1px solid #eadfbe;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow:
+        0 8px 22px rgba(14,95,92,0.06),
+        inset 0 0 0 1px rgba(255,255,255,0.55);
+    }
+
+    .coupon-ticket::before,
+    .coupon-ticket::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      margin-top: -11px;
+      background: var(--bg);
+      border-radius: 50%;
+      border: 1px solid #e9ecef;
+      z-index: 2;
+    }
+
+    .coupon-ticket::before { left: -12px; }
+    .coupon-ticket::after { right: -12px; }
+
+    .coupon-ticket.unredeemed {
+      background: linear-gradient(135deg, #fffdf3 0%, #fff7db 100%);
+      border-color: #f0df9a;
+    }
+
+    .coupon-ticket.redeemed {
+      background: linear-gradient(135deg, #f4f7f7 0%, #ecf2f2 100%);
+      border-color: #d9e3e3;
+      filter: grayscale(0.08);
+    }
+
+    .coupon-ticket.expired {
+      background: linear-gradient(135deg, #fbf4f4 0%, #f6eded 100%);
+      border-color: #e8c9cd;
+    }
+
+    .coupon-brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: rgba(14,95,92,0.68);
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .coupon-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .coupon-title-wrap {
+      min-width: 0;
+    }
+
+    .coupon-title {
+      display: block;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--brand-dark);
+      line-height: 1.35;
+      letter-spacing: 0.02em;
+      margin-top: 2px;
+    }
+
+    .coupon-subtitle {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .coupon-icon-bubble {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(255,255,255,0.75);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      font-size: 20px;
+      flex: 0 0 auto;
+    }
+
     .coupon-badge {
-      display: inline-block;
-      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 10px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight: 800;
-      margin-top: 8px;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35);
     }
 
     .coupon-badge.unredeemed {
-      background: #fff3cd;
-      color: #946200;
+      background: #fff0b8;
+      color: #8b5c00;
     }
 
     .coupon-badge.redeemed {
-      background: #e7f7ed;
-      color: #157347;
+      background: #d8ece0;
+      color: #18794e;
     }
 
     .coupon-badge.expired {
-      background: #f8d7da;
-      color: #b02a37;
+      background: #f4d6d9;
+      color: #ad2534;
+    }
+
+    .coupon-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .coupon-chip-row.centered {
+      justify-content: center;
+    }
+
+    .coupon-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.68);
+      border: 1px solid rgba(210, 222, 221, 0.9);
+      color: var(--brand-dark);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .coupon-divider {
+      position: relative;
+      margin: 12px 0 10px;
+      border-top: 1px dashed rgba(120,138,138,0.4);
+      z-index: 3;
+    }
+
+    .coupon-meta {
+      display: grid;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+      position: relative;
+      z-index: 3;
+    }
+
+    .coupon-meta strong {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .coupon-pickup-hint {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.58);
+      border: 1px dashed rgba(209, 191, 139, 0.88);
+      color: var(--brand-dark);
+      font-size: 12px;
+      line-height: 1.55;
+      position: relative;
+      z-index: 3;
+    }
+
+    .coupon-pickup-hint.centered {
+      text-align: center;
+    }
+
+    .coupon-action-row {
+      margin-top: 12px;
+      position: relative;
+      z-index: 3;
     }
 
     .coupon-code {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--brand-dark);
-      background: #f6fbfb;
+      background: rgba(255,255,255,0.72);
       padding: 10px 12px;
       border-radius: 12px;
-      border: 1px dashed #cfe3e2;
+      border: 1px dashed #cdbf8b;
       margin-top: 10px;
       word-break: break-all;
       text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    .coupon-corner-label {
+      position: absolute;
+      top: 10px;
+      right: -34px;
+      transform: rotate(35deg);
+      background: rgba(14,95,92,0.12);
+      color: var(--brand-dark);
+      font-size: 10px;
+      font-weight: 900;
+      padding: 4px 36px;
+      letter-spacing: 0.12em;
+      z-index: 1;
+    }
+
+    .coupon-stamp {
+      position: absolute;
+      right: 12px;
+      bottom: 18px;
+      transform: rotate(-10deg);
+      border: 3px solid rgba(198,40,40,0.82);
+      color: rgba(198,40,40,0.82);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      background: rgba(255,255,255,0.35);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.35) inset;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .coupon-stamp.redeemed {
+      border-color: rgba(21,115,71,0.78);
+      color: rgba(21,115,71,0.82);
+    }
+
+    .coupon-stamp.expired {
+      border-color: rgba(176,42,55,0.78);
+      color: rgba(176,42,55,0.8);
     }
 
     .coupon-detail-box {
-      background: #f8fcfc;
+      background: linear-gradient(180deg, #fffef8 0%, #fbfcfc 100%);
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 18px;
       padding: 14px;
       text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
     }
 
     .result-box {
@@ -540,8 +758,7 @@
       pointer-events: none;
       z-index: 7;
       opacity: 0;
-      background:
-        radial-gradient(circle, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.42) 28%, rgba(255,255,255,0) 68%);
+      background: radial-gradient(circle, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.42) 28%, rgba(255,255,255,0) 68%);
       transform: scale(0.86);
     }
 
@@ -684,7 +901,6 @@
             </div>
           </div>
 
-          <!-- 首頁 -->
           <div id="memberHome">
             <div class="card qrcode-wrap">
               <div class="section-label" style="color:#6d8382;">會員 QR CODE</div>
@@ -700,7 +916,6 @@
             </div>
           </div>
 
-          <!-- 抽獎頁 -->
           <div id="lotteryView" class="hidden">
             <div class="card wheel-panel">
               <div class="section-label" style="color:#6d8382;">會員轉盤抽獎</div>
@@ -729,7 +944,6 @@
             </div>
           </div>
 
-          <!-- 獎品頁 -->
           <div id="couponView" class="hidden">
             <div class="card">
               <div class="section-label" style="color:#6d8382; text-align:center;">我的獎品</div>
@@ -751,9 +965,10 @@
                 <strong id="couponPrizeNameText" style="font-size:16px;"></strong>
                 <div id="couponSpinTimeText" class="help-text" style="margin-top:6px;"></div>
                 <div id="couponStatusText" class="help-text" style="margin-top:6px;"></div>
+                <div id="couponVisualTags" class="coupon-chip-row centered"></div>
                 <div id="couponQrCode"></div>
                 <div id="couponRedeemCodeText" class="coupon-code"></div>
-                <div class="help-text">請出示此 QR code 給店員掃描，店員確認後才會核銷成功。</div>
+                <div id="couponPickupHintText" class="coupon-pickup-hint centered"></div>
               </div>
 
               <button id="hideCouponQrBtn" class="btn btn-ghost">收起兌換碼</button>
@@ -762,7 +977,6 @@
 
           <div class="tab-spacer"></div>
 
-          <!-- 底部 tab -->
           <div id="memberTabs" class="bottom-tabs">
             <button id="tabHome" class="tab-btn active" type="button">
               <span class="emoji">🏠</span>
@@ -891,7 +1105,6 @@
       bindTabActions();
       setActiveTab('home');
 
-      // 背景預載獎品資料，讓「出示兌換碼」更快
       preloadCouponsInBackground();
     }
 
@@ -962,8 +1175,8 @@
     async function showCouponsTab() {
       if (!couponLoaded) {
         await loadMemberCoupons();
-        renderCouponLists();
       }
+      renderCouponLists();
       document.getElementById('memberHome').classList.add('hidden');
       document.getElementById('lotteryView').classList.add('hidden');
       document.getElementById('couponView').classList.remove('hidden');
@@ -1240,6 +1453,40 @@
       });
     }
 
+    function getCouponBrandMeta(coupon) {
+      const name = String((coupon && coupon.prizeName) || '');
+      const chips = ['🐟 品牌券'];
+      let mainIcon = '🎁';
+      let pickup = '請出示此券給店員掃描核銷';
+      let ribbon = 'GUPPY';
+
+      if (/折|優惠|折價|免運|現折|95折|9折|100元/i.test(name)) {
+        mainIcon = '💸';
+        chips.push('💸 折扣圖章');
+        pickup = '結帳時出示給店員折抵或核銷';
+        ribbon = 'DISCOUNT';
+      }
+
+      if (/門市|現場|領取|試用包|小禮|神秘|飼料/i.test(name)) {
+        chips.push('🏪 門市領取');
+        pickup = '請至門市出示兌換碼，由店員核銷後領取';
+        if (ribbon === 'GUPPY') ribbon = 'STORE PICKUP';
+      }
+
+      if (/孔雀魚|魚/i.test(name)) {
+        chips.push('🐠 小魚圖示');
+        if (mainIcon === '🎁') mainIcon = '🐟';
+        if (ribbon === 'GUPPY') ribbon = 'FISH GIFT';
+      }
+
+      return {
+        mainIcon,
+        pickup,
+        ribbon,
+        chips: Array.from(new Set(chips))
+      };
+    }
+
     function buildCouponBadge(status) {
       if (status === 'REDEEMED') {
         return `<span class="coupon-badge redeemed">已兌換</span>`;
@@ -1252,29 +1499,78 @@
 
     function createCouponItem(coupon, type) {
       const item = document.createElement('div');
-      item.className = 'coupon-item';
 
-      let extraLine = '';
+      const statusClass =
+        type === 'redeemed' ? 'redeemed' :
+        type === 'expired' ? 'expired' : 'unredeemed';
+
+      const meta = getCouponBrandMeta(coupon);
+      item.className = `coupon-ticket ${statusClass}`;
+
+      let metaExtra = '';
+      let stampHtml = '';
+      let cornerLabel = `<div class="coupon-corner-label">${meta.ribbon}</div>`;
+
       if (type === 'redeemed') {
-        extraLine = `<span>核銷時間：${escapeHtml(coupon.redeemedAt || '')}</span>`;
+        metaExtra = `
+          <div>核銷時間：<strong>${escapeHtml(coupon.redeemedAt || '')}</strong></div>
+          <div>核銷人員：<strong>${escapeHtml(coupon.redeemedByName || '')}</strong></div>
+        `;
+        stampHtml = `<div class="coupon-stamp redeemed">已兌換</div>`;
+        cornerLabel = `<div class="coupon-corner-label">USED</div>`;
       } else if (type === 'expired') {
-        extraLine = `<span>到期時間：${escapeHtml(coupon.expireAt || '')}</span>`;
+        metaExtra = `
+          <div>到期時間：<strong>${escapeHtml(coupon.expireAt || '')}</strong></div>
+        `;
+        stampHtml = `<div class="coupon-stamp expired">已過期</div>`;
+        cornerLabel = `<div class="coupon-corner-label">EXPIRED</div>`;
+      } else {
+        metaExtra = `
+          <div>兌換碼：<strong>${escapeHtml(coupon.redeemCode || '')}</strong></div>
+          ${coupon.expireAt ? `<div>到期時間：<strong>${escapeHtml(coupon.expireAt)}</strong></div>` : ''}
+        `;
       }
 
       item.innerHTML = `
-        <strong>${escapeHtml(coupon.prizeName || '')}</strong>
-        <span>中獎時間：${escapeHtml(coupon.spinTime || '')}</span>
-        <span>兌換碼：${escapeHtml(coupon.redeemCode || '')}</span>
-        ${extraLine}
-        ${buildCouponBadge(coupon.couponStatus)}
+        ${cornerLabel}
+        <div class="coupon-brand-mark">🐟 GUPPY CLUB MEMBER COUPON</div>
+
+        <div class="coupon-top">
+          <div class="coupon-title-wrap">
+            <span class="coupon-subtitle">會員獎品券</span>
+            <strong class="coupon-title">${escapeHtml(coupon.prizeName || '')}</strong>
+          </div>
+          <div class="coupon-icon-bubble">${meta.mainIcon}</div>
+        </div>
+
+        <div class="coupon-chip-row">
+          ${meta.chips.map(chip => `<span class="coupon-chip">${escapeHtml(chip)}</span>`).join('')}
+          ${buildCouponBadge(coupon.couponStatus)}
+        </div>
+
+        <div class="coupon-divider"></div>
+
+        <div class="coupon-meta">
+          <div>中獎時間：<strong>${escapeHtml(coupon.spinTime || '')}</strong></div>
+          ${metaExtra}
+        </div>
+
+        <div class="coupon-pickup-hint">${escapeHtml(meta.pickup)}</div>
+
+        ${stampHtml}
       `;
 
       if (type === 'unredeemed') {
+        const actionRow = document.createElement('div');
+        actionRow.className = 'coupon-action-row';
+
         const btn = document.createElement('button');
         btn.className = 'btn btn-primary';
-        btn.innerText = '出示兌換碼';
+        btn.innerText = '立即出示兌換券';
         btn.onclick = () => showCouponQrInstant(coupon);
-        item.appendChild(btn);
+
+        actionRow.appendChild(btn);
+        item.appendChild(actionRow);
       }
 
       return item;
@@ -1312,17 +1608,21 @@
       }
     }
 
-    // 秒開版：直接使用 member_coupons 已載入的資料，不再額外 fetch coupon_detail
-    function showCouponQrInstant(coupon) {
-      if (!coupon || coupon.couponStatus !== 'UNREDEEMED') {
-        alert('這張券目前無法出示兌換碼');
-        return;
-      }
+    function renderCouponVisualTags(coupon) {
+      const meta = getCouponBrandMeta(coupon);
+      const tagWrap = document.getElementById('couponVisualTags');
+      tagWrap.innerHTML = meta.chips.map(chip => `<span class="coupon-chip">${escapeHtml(chip)}</span>`).join('');
+      document.getElementById('couponPickupHintText').innerText = meta.pickup;
+    }
 
-      document.getElementById('couponPrizeNameText').innerText = coupon.prizeName || '';
+    function renderCouponQrCard(coupon) {
+      document.getElementById('couponPrizeNameText').innerText = `🎁 ${coupon.prizeName || ''}`;
       document.getElementById('couponSpinTimeText').innerText = `中獎時間：${coupon.spinTime || ''}`;
-      document.getElementById('couponStatusText').innerText = `狀態：${coupon.couponStatusText || ''}`;
+      document.getElementById('couponStatusText').innerText =
+        `${coupon.couponStatusText || ''}${coupon.expireAt ? `｜到期：${coupon.expireAt}` : ''}`;
       document.getElementById('couponRedeemCodeText').innerText = coupon.redeemCode || '';
+
+      renderCouponVisualTags(coupon);
 
       const qrContainer = document.getElementById('couponQrCode');
       qrContainer.innerHTML = '';
@@ -1338,9 +1638,40 @@
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
+    async function showCouponQrInstant(coupon) {
+      if (!coupon || coupon.couponStatus !== 'UNREDEEMED') {
+        alert('這張券目前無法出示兌換碼');
+        return;
+      }
+
+      if (coupon.redeemQrPayload && coupon.redeemCode) {
+        renderCouponQrCard(coupon);
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `${SCRIPT_URL}?action=coupon_detail&spinId=${encodeURIComponent(coupon.spinId)}&code=${encodeURIComponent(coupon.redeemCode || '')}&t=${Date.now()}`
+        );
+        const detail = await res.json();
+
+        if (!detail.ok) {
+          alert(detail.message || '無法讀取這張券');
+          return;
+        }
+
+        renderCouponQrCard(detail);
+      } catch (err) {
+        console.error(err);
+        alert('載入兌換碼失敗');
+      }
+    }
+
     function hideCouponQrCard() {
       document.getElementById('couponQrCard').classList.add('hidden');
       document.getElementById('couponQrCode').innerHTML = '';
+      document.getElementById('couponVisualTags').innerHTML = '';
+      document.getElementById('couponPickupHintText').innerText = '';
     }
 
     function initWheelLights() {
@@ -1692,7 +2023,6 @@
         await loadMemberProfile();
         renderMemberProfile();
 
-        // 抽完後強制刷新券資料，讓「我的獎品」馬上有最新內容
         couponLoaded = false;
         await loadMemberCoupons(true);
         renderCouponLists();
@@ -1713,7 +2043,6 @@
         await loadMemberProfile();
         renderMemberProfile();
       } finally {
-        const btn = document.getElementById('spinBtn');
         if ((memberData.currentPoints || 0) < LOTTERY_COST) {
           btn.disabled = true;
           btn.innerText = `點數不足（需要 ${LOTTERY_COST} 點）`;
