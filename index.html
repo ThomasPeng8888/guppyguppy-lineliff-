@@ -464,12 +464,6 @@
         document.getElementById('status').innerText =
           `您好，${currentProfile.displayName}\nuserId：${currentProfile.userId}`;
     
-        // 另外跳出視窗，方便直接複製
-        alert(
-          "請複製這個 LINE userId 貼到 Google Sheet 的 Staff 分頁第一欄：\n\n" +
-          currentProfile.userId
-        );
-    
         console.log("LINE displayName:", currentProfile.displayName);
         console.log("LINE userId:", currentProfile.userId);
     
