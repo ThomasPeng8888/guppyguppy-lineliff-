@@ -18,6 +18,8 @@
       --muted: #6d8382;
       --danger: #c62828;
       --success: #188038;
+      --gold: #ffd54f;
+      --gold-soft: #fff7cc;
     }
 
     * { box-sizing: border-box; }
@@ -233,34 +235,117 @@
 
     .wheel-wrapper {
       position: relative;
-      width: 280px;
-      height: 280px;
-      margin: 16px auto 12px;
+      width: 300px;
+      height: 300px;
+      margin: 18px auto 12px;
+    }
+
+    .wheel-stage {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wheel-lights {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .wheel-light {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      margin-left: -7px;
+      margin-top: -7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 0 10px rgba(255,255,255,0.65);
+      transform-origin: 0 0;
+      opacity: 0.55;
+    }
+
+    .wheel-lights.spinning .wheel-light:nth-child(odd) {
+      animation: bulbBlinkA 0.4s linear infinite;
+    }
+
+    .wheel-lights.spinning .wheel-light:nth-child(even) {
+      animation: bulbBlinkB 0.4s linear infinite;
+    }
+
+    @keyframes bulbBlinkA {
+      0%, 49% { opacity: 0.35; background: rgba(255,255,255,0.72); }
+      50%, 100% { opacity: 1; background: rgba(255,213,79,1); box-shadow: 0 0 14px rgba(255,213,79,0.95); }
+    }
+
+    @keyframes bulbBlinkB {
+      0%, 49% { opacity: 1; background: rgba(255,213,79,1); box-shadow: 0 0 14px rgba(255,213,79,0.95); }
+      50%, 100% { opacity: 0.35; background: rgba(255,255,255,0.72); }
     }
 
     .pointer {
       position: absolute;
       left: 50%;
-      top: -4px;
+      top: -6px;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 16px solid transparent;
-      border-right: 16px solid transparent;
-      border-top: 28px solid #ff6d00;
-      z-index: 6;
-      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.18));
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 34px solid #ff6d00;
+      z-index: 8;
+      filter: drop-shadow(0 3px 5px rgba(0,0,0,0.22));
+      transform-origin: center top;
+    }
+
+    .pointer.spinning {
+      animation: pointerIdle 0.18s ease-in-out infinite alternate;
+    }
+
+    .pointer.tick {
+      animation: pointerTick 0.09s ease-out;
+    }
+
+    @keyframes pointerIdle {
+      from { transform: translateX(-50%) rotate(-2deg); }
+      to { transform: translateX(-50%) rotate(2deg); }
+    }
+
+    @keyframes pointerTick {
+      0% { transform: translateX(-50%) rotate(0deg); }
+      45% { transform: translateX(-50%) rotate(7deg); }
+      100% { transform: translateX(-50%) rotate(0deg); }
+    }
+
+    .wheel-shadow-ring {
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      box-shadow:
+        inset 0 14px 26px rgba(255,255,255,0.18),
+        inset 0 -18px 24px rgba(0,0,0,0.12);
+      z-index: 4;
+      pointer-events: none;
     }
 
     .wheel {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 10px solid #fff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      border: 12px solid #fff;
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.14),
+        inset 0 0 0 2px rgba(255,255,255,0.3);
       position: relative;
       overflow: hidden;
-      transition: transform 5.2s cubic-bezier(0.17, 0.67, 0.18, 1.02);
+      transition: transform 5.8s cubic-bezier(0.11, 0.76, 0.16, 1);
       background: conic-gradient(
         #0e5f5c 0deg 60deg,
         #17a2a0 60deg 120deg,
@@ -269,6 +354,7 @@
         #45b36b 240deg 300deg,
         #4fc3f7 300deg 360deg
       );
+      z-index: 3;
     }
 
     @keyframes wheelPendingSpin {
@@ -277,71 +363,72 @@
     }
 
     .wheel.pending-spin {
-      animation: wheelPendingSpin 0.45s linear infinite;
+      animation: wheelPendingSpin 0.36s linear infinite;
       filter: saturate(1.08) brightness(1.03);
     }
 
     .wheel.is-winning {
       box-shadow:
-        0 0 0 10px rgba(255,255,255,0.5),
-        0 0 24px rgba(244,180,0,0.65),
-        0 0 56px rgba(255,193,7,0.35),
-        0 12px 34px rgba(0,0,0,0.16);
+        0 0 0 10px rgba(255,255,255,0.45),
+        0 0 24px rgba(244,180,0,0.8),
+        0 0 66px rgba(255,193,7,0.42),
+        0 12px 34px rgba(0,0,0,0.18);
     }
 
     .wheel-center {
       position: absolute;
       inset: 50%;
-      width: 88px;
-      height: 88px;
+      width: 94px;
+      height: 94px;
       transform: translate(-50%, -50%);
       background: #fff;
       border-radius: 50%;
-      z-index: 7;
+      z-index: 9;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
       color: var(--brand-color);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
       transition: 0.25s ease;
       text-align: center;
       padding: 8px;
-      line-height: 1.1;
+      line-height: 1.08;
+      border: 3px solid rgba(255,255,255,0.95);
     }
 
     .wheel-center.is-spinning {
       background: linear-gradient(135deg, #fff7e6, #ffffff);
       color: #d97706;
-      transform: translate(-50%, -50%) scale(1.05);
-      box-shadow: 0 0 0 10px rgba(255, 193, 7, 0.12), 0 8px 28px rgba(0,0,0,0.18);
+      transform: translate(-50%, -50%) scale(1.06);
+      box-shadow: 0 0 0 12px rgba(255, 193, 7, 0.14), 0 8px 28px rgba(0,0,0,0.18);
     }
 
     .wheel-center.is-win {
       background: linear-gradient(135deg, #fff3cd, #ffffff);
       color: #b45309;
-      transform: translate(-50%, -50%) scale(1.08);
-      box-shadow: 0 0 0 14px rgba(255, 215, 0, 0.18), 0 10px 32px rgba(0,0,0,0.2);
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: 0 0 0 15px rgba(255, 215, 0, 0.2), 0 12px 34px rgba(0,0,0,0.2);
     }
 
     .wheel-label {
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 110px;
+      width: 112px;
       transform-origin: 0 0;
       text-align: right;
       font-size: 12px;
       font-weight: 800;
       color: #fff;
       text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-      z-index: 3;
+      z-index: 5;
       line-height: 1.3;
       pointer-events: none;
     }
 
     .spin-hint {
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 12px;
       color: var(--muted);
       min-height: 18px;
@@ -380,21 +467,64 @@
       inset: 0;
       border-radius: 50%;
       pointer-events: none;
-      z-index: 5;
+      z-index: 7;
       opacity: 0;
       background:
-        radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.38) 28%, rgba(255,255,255,0) 68%);
+        radial-gradient(circle, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.42) 28%, rgba(255,255,255,0) 68%);
       transform: scale(0.86);
     }
 
     @keyframes resultFlash {
       0%   { opacity: 0; transform: scale(0.86); }
-      25%  { opacity: 0.95; transform: scale(1.06); }
-      100% { opacity: 0; transform: scale(1.22); }
+      25%  { opacity: 0.98; transform: scale(1.08); }
+      100% { opacity: 0; transform: scale(1.24); }
     }
 
     .flash-effect.show {
       animation: resultFlash 0.95s ease-out forwards;
+    }
+
+    .confetti-layer {
+      position: absolute;
+      inset: -10px;
+      z-index: 10;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .confetti {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 10px;
+      height: 16px;
+      opacity: 0;
+      border-radius: 2px;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes confettiBurst {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(0deg) scale(0.2);
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform:
+          translate(
+            calc(-50% + var(--dx)),
+            calc(-50% + var(--dy))
+          )
+          rotate(var(--rot))
+          scale(1);
+      }
+    }
+
+    .confetti.show {
+      animation: confettiBurst 1.25s cubic-bezier(0.11, 0.82, 0.18, 1) forwards;
     }
 
     .footer-text {
@@ -453,9 +583,12 @@
               <div class="help-text">每次抽獎消耗 6 點，轉盤轉完後才會顯示中獎結果，並同步通知會員與管理員。</div>
 
               <div class="wheel-wrapper">
-                <div class="pointer"></div>
+                <div id="wheelLights" class="wheel-lights"></div>
+                <div id="pointer" class="pointer"></div>
                 <div id="flashEffect" class="flash-effect"></div>
+                <div id="confettiLayer" class="confetti-layer"></div>
                 <div id="wheel" class="wheel"></div>
+                <div class="wheel-shadow-ring"></div>
                 <div id="wheelCenter" class="wheel-center">
                   <span id="wheelCenterText">抽獎</span>
                 </div>
@@ -520,7 +653,8 @@
     let prizeData = [];
     let currentRotation = 0;
     let spinning = false;
-    let winAudioContext = null;
+    let audioContext = null;
+    let tickTimers = [];
 
     async function init() {
       try {
@@ -535,6 +669,9 @@
         const act = params.get('act');
 
         document.getElementById('status').innerText = `您好，${currentProfile.displayName}`;
+
+        initWheelLights();
+        initConfetti();
 
         if (act === 'staff_add') {
           await initStaffMode(params);
@@ -688,7 +825,7 @@
         const angle = idx * 60 + 30;
         const label = document.createElement('div');
         label.className = 'wheel-label';
-        label.style.transform = `rotate(${angle}deg) translate(0, -112px) rotate(90deg)`;
+        label.style.transform = `rotate(${angle}deg) translate(0, -116px) rotate(90deg)`;
         label.textContent = prize.prizeName || `獎項 ${idx + 1}`;
         wheel.appendChild(label);
       });
@@ -706,6 +843,56 @@
           <span>庫存：${prize.stock === '' || prize.stock === null || prize.stock === undefined ? '不限' : prize.stock}</span>
         `;
         list.appendChild(item);
+      });
+    }
+
+    function initWheelLights() {
+      const wrap = document.getElementById('wheelLights');
+      wrap.innerHTML = '';
+      const total = 24;
+      const radius = 146;
+
+      for (let i = 0; i < total; i++) {
+        const bulb = document.createElement('span');
+        bulb.className = 'wheel-light';
+        const angle = (360 / total) * i;
+        bulb.style.transform = `rotate(${angle}deg) translate(0, -${radius}px)`;
+        wrap.appendChild(bulb);
+      }
+    }
+
+    function initConfetti() {
+      const layer = document.getElementById('confettiLayer');
+      layer.innerHTML = '';
+      const colors = ['#ffd54f', '#ff8f00', '#4fc3f7', '#45b36b', '#ffffff', '#f06292'];
+
+      for (let i = 0; i < 24; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti';
+        piece.style.background = colors[i % colors.length];
+        piece.style.width = `${8 + (i % 4)}px`;
+        piece.style.height = `${12 + (i % 5)}px`;
+        piece.dataset.index = i;
+        layer.appendChild(piece);
+      }
+    }
+
+    function showConfettiBurst() {
+      const pieces = document.querySelectorAll('.confetti');
+      pieces.forEach((piece, idx) => {
+        piece.classList.remove('show');
+        void piece.offsetWidth;
+
+        const angle = (360 / pieces.length) * idx + (Math.random() * 14 - 7);
+        const distance = 110 + Math.random() * 72;
+        const dx = Math.cos(angle * Math.PI / 180) * distance;
+        const dy = Math.sin(angle * Math.PI / 180) * distance;
+        const rot = `${Math.random() * 520 - 260}deg`;
+
+        piece.style.setProperty('--dx', `${dx}px`);
+        piece.style.setProperty('--dy', `${dy}px`);
+        piece.style.setProperty('--rot', rot);
+        piece.classList.add('show');
       });
     }
 
@@ -739,36 +926,171 @@
       setWheelCenterText('抽獎');
     }
 
+    function clearTickTimers() {
+      tickTimers.forEach(id => clearTimeout(id));
+      tickTimers = [];
+    }
+
+    function getAudioContext() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return null;
+      if (!audioContext) audioContext = new AudioCtx();
+      if (audioContext.state === 'suspended') audioContext.resume();
+      return audioContext;
+    }
+
+    function playClickSound(volume = 0.045, duration = 0.03, freq = 850) {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(700, ctx.currentTime);
+
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(volume, ctx.currentTime + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + duration + 0.01);
+      } catch (err) {
+        console.error('click sound error', err);
+      }
+    }
+
+    function playWinFanfare() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const notes = [
+          { freq: 880,  len: 0.16, type: 'triangle', gain: 0.055 },
+          { freq: 1174.66, len: 0.17, type: 'triangle', gain: 0.06 },
+          { freq: 1567.98, len: 0.2, type: 'triangle', gain: 0.065 },
+          { freq: 2093.0, len: 0.28, type: 'sine', gain: 0.07 }
+        ];
+
+        let start = ctx.currentTime;
+        notes.forEach((note, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = note.type;
+          osc.frequency.setValueAtTime(note.freq, start);
+
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(note.gain, start + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, start + note.len);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(start);
+          osc.stop(start + note.len + 0.02);
+
+          start += i === 2 ? 0.14 : 0.11;
+        });
+      } catch (err) {
+        console.error('win sound error', err);
+      }
+    }
+
+    function pulsePointerTick() {
+      const pointer = document.getElementById('pointer');
+      pointer.classList.remove('tick');
+      void pointer.offsetWidth;
+      pointer.classList.add('tick');
+    }
+
     function startPendingSpin() {
       const wheel = document.getElementById('wheel');
+      const lights = document.getElementById('wheelLights');
+      const pointer = document.getElementById('pointer');
+
       wheel.classList.remove('is-winning');
       wheel.classList.add('pending-spin');
       wheel.style.transition = 'none';
+
+      lights.classList.add('spinning');
+      pointer.classList.add('spinning');
+
       setWheelCenterSpinning();
-      setSpinHint('抽獎中，請稍候...');
+      setSpinHint('轉盤啟動中，正在抽出結果...');
     }
 
     function stopPendingSpin() {
       const wheel = document.getElementById('wheel');
+      const lights = document.getElementById('wheelLights');
+      const pointer = document.getElementById('pointer');
+
       wheel.classList.remove('pending-spin');
-      wheel.style.transition = 'transform 5.2s cubic-bezier(0.17, 0.67, 0.18, 1.02)';
+      wheel.style.transition = 'transform 5.8s cubic-bezier(0.11, 0.76, 0.16, 1)';
       wheel.style.transform = `rotate(${currentRotation}deg)`;
       void wheel.offsetWidth;
+
+      lights.classList.add('spinning');
+      pointer.classList.add('spinning');
+    }
+
+    function stopAllSpinEffects() {
+      const lights = document.getElementById('wheelLights');
+      const pointer = document.getElementById('pointer');
+      lights.classList.remove('spinning');
+      pointer.classList.remove('spinning');
+      clearTickTimers();
+    }
+
+    function scheduleTickSounds(totalMs = 5800) {
+      clearTickTimers();
+      const totalTicks = 24;
+
+      for (let i = 0; i < totalTicks; i++) {
+        const p = i / (totalTicks - 1);
+        const eased = 1 - Math.pow(1 - p, 2.35);
+        const t = Math.floor(eased * totalMs);
+
+        const timer = setTimeout(() => {
+          pulsePointerTick();
+          const volume = 0.034 + (1 - p) * 0.03;
+          const freq = 760 + (1 - p) * 260;
+          playClickSound(volume, 0.026, freq);
+          if (p > 0.75) {
+            setSpinHint('快要停下來了...');
+          }
+        }, t);
+
+        tickTimers.push(timer);
+      }
     }
 
     async function animateWheelToPrize(prizeIndex) {
       const wheel = document.getElementById('wheel');
 
       stopPendingSpin();
-      await sleep(60);
+      await sleep(70);
 
       const centerAngle = prizeIndex * 60 + 30;
       const target = 360 - centerAngle;
-      currentRotation += 360 * 6 + target;
+      currentRotation += 360 * 7 + target;
 
+      scheduleTickSounds(5800);
+
+      setSpinHint('轉盤高速旋轉中...');
       wheel.style.transform = `rotate(${currentRotation}deg)`;
-      setSpinHint('轉盤轉動中...');
-      await sleep(5400);
+
+      await sleep(5800);
+      stopAllSpinEffects();
     }
 
     function playWinFlash() {
@@ -791,44 +1113,12 @@
       }, 1800);
     }
 
-    function playWinSound() {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-
-        if (!winAudioContext) {
-          winAudioContext = new AudioCtx();
-        }
-
-        if (winAudioContext.state === 'suspended') {
-          winAudioContext.resume();
-        }
-
-        const notes = [880, 1174.66, 1567.98];
-        let start = winAudioContext.currentTime;
-
-        notes.forEach((freq) => {
-          const osc = winAudioContext.createOscillator();
-          const gain = winAudioContext.createGain();
-
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, start);
-
-          gain.gain.setValueAtTime(0.0001, start);
-          gain.gain.exponentialRampToValueAtTime(0.08, start + 0.01);
-          gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
-
-          osc.connect(gain);
-          gain.connect(winAudioContext.destination);
-
-          osc.start(start);
-          osc.stop(start + 0.24);
-
-          start += 0.12;
-        });
-      } catch (err) {
-        console.error('音效播放失敗', err);
-      }
+    function celebrateWin() {
+      setWheelCenterWin();
+      playWinFlash();
+      showConfettiBurst();
+      playWinFanfare();
+      setSpinHint('恭喜中獎！');
     }
 
     async function triggerNotify(spinId) {
@@ -877,10 +1167,11 @@
           })
         }).then(res => res.json());
 
-        await sleep(900);
+        await sleep(950);
         const result = await preparePromise;
 
         if (!result.ok) {
+          stopAllSpinEffects();
           stopPendingSpin();
           resetWheelCenter();
           setSpinHint('抽獎失敗，請稍後再試');
@@ -893,24 +1184,20 @@
         }
 
         await animateWheelToPrize(result.prizeIndex);
-
-        setWheelCenterWin();
-        playWinFlash();
-        playWinSound();
-        setSpinHint('恭喜中獎！');
+        celebrateWin();
 
         resultBox.classList.remove('hidden');
         resultBox.innerHTML =
           `🎉 恭喜抽中：<strong>${escapeHtml(result.prizeName)}</strong><br>` +
           `已扣除 ${result.costPoints} 點，目前剩餘 ${result.currentPoints} 點。`;
 
-        await sleep(650);
+        await sleep(700);
         await triggerNotify(result.spinId);
 
         await loadMemberProfile();
         renderMemberProfile();
 
-        await sleep(900);
+        await sleep(1000);
         resetWheelCenter();
         setSpinHint('通知已送出，可再次抽獎或返回首頁');
 
@@ -918,6 +1205,7 @@
         backBtn.disabled = false;
       } catch (err) {
         console.error(err);
+        stopAllSpinEffects();
         stopPendingSpin();
         resetWheelCenter();
         setSpinHint('通訊失敗，請稍後再試');
