@@ -455,13 +455,24 @@
           liff.login();
           return;
         }
-
+    
         currentProfile = await liff.getProfile();
         const params = new URLSearchParams(location.search);
         const act = params.get('act');
-
-        document.getElementById('status').innerText = `您好，${currentProfile.displayName}`;
-
+    
+        // 顯示目前登入者資訊，方便你複製到 Staff 表
+        document.getElementById('status').innerText =
+          `您好，${currentProfile.displayName}\nuserId：${currentProfile.userId}`;
+    
+        // 另外跳出視窗，方便直接複製
+        alert(
+          "請複製這個 LINE userId 貼到 Google Sheet 的 Staff 分頁第一欄：\n\n" +
+          currentProfile.userId
+        );
+    
+        console.log("LINE displayName:", currentProfile.displayName);
+        console.log("LINE userId:", currentProfile.userId);
+    
         if (act === 'staff_add') {
           await initStaffMode(params);
         } else {
