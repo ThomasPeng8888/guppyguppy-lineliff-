@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>嘎比嘎比孔雀魚水族工作室｜會員中心</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --brand-color: #0e5f5c;
+      --brand-dark: #083b39;
+      --brand-soft: #e8f7f6;
+      --accent: #f4b400;
+      --bg: #f5fbfb;
+      --card: #ffffff;
+      --text: #123230;
+      --muted: #6d8382;
+      --danger: #c62828;
+      --success: #188038;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 18px 14px 36px;
+    }
+
+    .shell {
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+      overflow: hidden;
+      border-top: 8px solid var(--brand-color);
+    }
+
+    .header {
+      padding: 24px 20px 18px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0%, #f7fcfc 100%);
+    }
+
+    .logo {
+      width: 108px;
+      height: 108px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 10px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin: 0;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+    }
+
+    .content {
+      padding: 0 16px 20px;
+    }
+
+    .status {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 12px 0 6px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #edf3f3;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 14px;
+      box-shadow: 0 6px 20px rgba(14, 95, 92, 0.04);
+    }
+
+    .points-card {
+      background: linear-gradient(135deg, var(--brand-color), var(--brand-dark));
+      color: #fff;
+      text-align: center;
+    }
+
+    .section-label {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      opacity: 0.85;
+    }
+
+    .points-number {
+      font-size: 56px;
+      line-height: 1;
+      font-weight: 900;
+      margin: 12px 0 4px;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .mini-stat {
+      background: #f6fbfb;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .mini-stat .value {
+      font-size: 20px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    .mini-stat .label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .qrcode-wrap {
+      text-align: center;
+    }
+
+    #qrcode {
+      display: inline-block;
+      padding: 14px;
+      background: #fff;
+      border: 1px solid #e6efef;
+      border-radius: 14px;
+      margin-top: 10px;
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 12px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 15px 16px;
+      margin-top: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary { background: var(--brand-color); color: #fff; }
+    .btn-accent { background: var(--accent); color: #2d2400; }
+    .btn-ghost { background: transparent; color: var(--muted); text-decoration: underline; }
+    .btn-danger { background: #c0392b; color: #fff; }
+
+    .hidden { display: none !important; }
+
+    .staff-box {
+      background: var(--brand-soft);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .member-name {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 10px 0 16px;
+    }
+
+    .field {
+      margin-top: 12px;
+      text-align: left;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .field input, .field textarea {
+      width: 100%;
+      border: 1px solid #d6e4e4;
+      border-radius: 12px;
+      padding: 13px 12px;
+      font-size: 16px;
+      outline: none;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .preview {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #fff;
+      color: var(--brand-dark);
+      font-weight: 800;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .wheel-panel {
+      text-align: center;
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 16px auto 12px;
+    }
+
+    .pointer {
+      position: absolute;
+      left: 50%;
+      top: -4px;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-top: 28px solid #ff6d00;
+      z-index: 5;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.18));
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 10px solid #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
+      transition: transform 5.2s cubic-bezier(0.17, 0.67, 0.18, 1.02);
+      background: conic-gradient(
+        #0e5f5c 0deg 60deg,
+        #17a2a0 60deg 120deg,
+        #f4b400 120deg 180deg,
+        #ff8f00 180deg 240deg,
+        #45b36b 240deg 300deg,
+        #4fc3f7 300deg 360deg
+      );
+    }
+
+    .wheel-center {
+      position: absolute;
+      inset: 50%;
+      width: 88px;
+      height: 88px;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      border-radius: 50%;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: var(--brand-color);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .wheel-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 110px;
+      transform-origin: 0 0;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      z-index: 3;
+      line-height: 1.3;
+    }
+
+    .prize-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .prize-item {
+      background: #f8fcfc;
+      border: 1px solid #e7f0f0;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .prize-item strong { display: block; font-size: 14px; }
+    .prize-item span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .result-box {
+      margin-top: 12px;
+      background: #fff7e6;
+      border: 1px solid #ffe0a3;
+      border-radius: 14px;
+      padding: 14px;
+      line-height: 1.7;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .footer-text {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 20px;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell">
+      <div class="header">
+        <img id="brandLogo" src="https://raw.githubusercontent.com/your-account/your-repo/main/logo.png" class="logo" alt="logo">
+        <h1 class="title">嘎比嘎比孔雀魚水族工作室</h1>
+        <p class="subtitle">LINE 會員中心 / 集點 / 抽獎 / 回購經營</p>
+      </div>
+
+      <div class="content">
+        <div id="status" class="status">連線中...</div>
+
+        <div id="memberView" class="hidden">
+          <div class="card points-card">
+            <div class="section-label">目前會員點數</div>
+            <div id="pointsDisplay" class="points-number">--</div>
+            <div id="tierText">會員等級：一般會員</div>
+          </div>
+
+          <div class="grid-two">
+            <div class="mini-stat">
+              <div class="label">累積消費</div>
+              <div id="totalSpendDisplay" class="value">$0</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">抽獎次數</div>
+              <div id="spinCountDisplay" class="value">0</div>
+            </div>
+          </div>
+
+          <div id="memberHome">
+            <div class="card qrcode-wrap">
+              <div class="section-label" style="color:#6d8382;">會員 QR CODE</div>
+              <div id="qrcode"></div>
+              <div class="help-text">結帳時出示此 QR code，店員掃描後輸入本次消費金額，系統會自動換算點數。</div>
+            </div>
+
+            <button id="openLotteryBtn" class="btn btn-accent">消耗 6 點開始抽獎</button>
+            <button onclick="liff.closeWindow()" class="btn btn-ghost">關閉視窗</button>
+          </div>
+
+          <div id="lotteryView" class="hidden">
+            <div class="card wheel-panel">
+              <div class="section-label" style="color:#6d8382;">會員轉盤抽獎</div>
+              <div class="help-text">每次抽獎消耗 6 點，抽獎結果會同步寫入 Google Sheet，並通知會員與管理員。</div>
+
+              <div class="wheel-wrapper">
+                <div class="pointer"></div>
+                <div id="wheel" class="wheel"></div>
+                <div class="wheel-center">抽獎</div>
+              </div>
+
+              <button id="spinBtn" class="btn btn-danger">立即抽獎（扣 6 點）</button>
+              <button id="backHomeBtn" class="btn btn-ghost">返回會員首頁</button>
+
+              <div id="lotteryResult" class="result-box hidden"></div>
+            </div>
+
+            <div class="card">
+              <div class="section-label" style="color:#6d8382; text-align:center;">本期獎項</div>
+              <div id="prizeList" class="prize-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="staffView" class="hidden">
+          <div class="card">
+            <div class="staff-box">
+              <div class="section-label" style="color:#6d8382;">消費集點模式</div>
+              <div id="targetMemberName" class="member-name">---</div>
+
+              <div class="field">
+                <label for="purchaseAmount">本次消費金額</label>
+                <input id="purchaseAmount" type="number" min="0" step="1" placeholder="例如 3200">
+              </div>
+
+              <div class="field">
+                <label for="orderNo">訂單編號（可不填）</label>
+                <input id="orderNo" type="text" placeholder="例如 20260412001">
+              </div>
+
+              <div class="field">
+                <label for="purchaseNote">備註（可不填）</label>
+                <textarea id="purchaseNote" rows="3" placeholder="例如：孔雀魚 2 組＋飼料"></textarea>
+              </div>
+
+              <div id="pointsPreview" class="preview">本次消費 0 元，可獲得 0 點</div>
+            </div>
+
+            <button id="confirmPurchaseBtn" class="btn btn-primary">確認入點</button>
+            <button onclick="liff.closeWindow()" class="btn btn-ghost">取消退出</button>
+          </div>
+        </div>
+
+        <div class="footer-text">讓會員更願意回購，也讓經營數據更清楚</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const LIFF_ID = "請改成你的 LIFF ID";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9sDMvQmkjxAoMDMW9kOakIHjlqc7eq1Gev7XHyZLNZh1jWJFfGm8yOYU6F_wZDbr9/exec";
+    const LOTTERY_COST = 6;
+
+    let currentProfile = null;
+    let memberData = null;
+    let prizeData = [];
+    let currentRotation = 0;
+    let spinning = false;
+
+    async function init() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        currentProfile = await liff.getProfile();
+        const params = new URLSearchParams(location.search);
+        const act = params.get('act');
+
+        document.getElementById('status').innerText = `您好，${currentProfile.displayName}`;
+
+        if (act === 'staff_add') {
+          await initStaffMode(params);
+        } else {
+          await initMemberMode();
+        }
+      } catch (err) {
+        document.getElementById('status').innerText = '系統初始化失敗，請稍後再試';
+        console.error(err);
+      }
+    }
+
+    async function initMemberMode() {
+      document.getElementById('memberView').classList.remove('hidden');
+      document.getElementById('staffView').classList.add('hidden');
+
+      await loadMemberProfile();
+      await loadLotteryPrizes();
+      renderMemberProfile();
+      renderQrCode();
+      renderWheelLabels();
+      renderPrizeList();
+
+      document.getElementById('openLotteryBtn').onclick = () => {
+        document.getElementById('memberHome').classList.add('hidden');
+        document.getElementById('lotteryView').classList.remove('hidden');
+      };
+
+      document.getElementById('backHomeBtn').onclick = () => {
+        document.getElementById('lotteryView').classList.add('hidden');
+        document.getElementById('memberHome').classList.remove('hidden');
+        document.getElementById('lotteryResult').classList.add('hidden');
+      };
+
+      document.getElementById('spinBtn').onclick = spinLottery;
+    }
+
+    async function initStaffMode(params) {
+      document.getElementById('memberView').classList.add('hidden');
+      document.getElementById('staffView').classList.remove('hidden');
+      document.getElementById('targetMemberName').innerText = params.get('name') || '未命名會員';
+
+      const purchaseInput = document.getElementById('purchaseAmount');
+      const preview = document.getElementById('pointsPreview');
+
+      const refreshPreview = () => {
+        const amount = parseInt(purchaseInput.value, 10) || 0;
+        const points = Math.floor(amount / 1000);
+        preview.innerHTML = `本次消費 <strong>${amount.toLocaleString()}</strong> 元，可獲得 <strong>${points}</strong> 點`;
+      };
+
+      purchaseInput.addEventListener('input', refreshPreview);
+      refreshPreview();
+
+      document.getElementById('confirmPurchaseBtn').onclick = async () => {
+        const amount = parseInt(purchaseInput.value, 10) || 0;
+        const orderNo = document.getElementById('orderNo').value.trim();
+        const note = document.getElementById('purchaseNote').value.trim();
+
+        if (amount <= 0) {
+          alert('請輸入正確的消費金額');
+          return;
+        }
+
+        const btn = document.getElementById('confirmPurchaseBtn');
+        btn.disabled = true;
+        btn.innerText = '處理中...';
+
+        try {
+          const res = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'add_purchase_points',
+              userId: params.get('uid'),
+              displayName: params.get('name'),
+              staffId: currentProfile.userId,
+              staffName: currentProfile.displayName,
+              purchaseAmount: amount,
+              orderNo: orderNo,
+              note: note
+            })
+          });
+
+          const result = await res.json();
+          if (!result.ok) {
+            alert(result.message || '集點失敗');
+            btn.disabled = false;
+            btn.innerText = '確認入點';
+            return;
+          }
+
+          alert(`集點成功\n消費金額：${result.purchaseAmount} 元\n獲得點數：${result.earnedPoints} 點\n目前點數：${result.currentPoints} 點`);
+          liff.closeWindow();
+        } catch (err) {
+          console.error(err);
+          alert('通訊失敗，請稍後再試');
+          btn.disabled = false;
+          btn.innerText = '確認入點';
+        }
+      };
+    }
+
+    async function loadMemberProfile() {
+      const res = await fetch(`${SCRIPT_URL}?action=member_profile&uid=${encodeURIComponent(currentProfile.userId)}&name=${encodeURIComponent(currentProfile.displayName)}&t=${Date.now()}`);
+      memberData = await res.json();
+    }
+
+    async function loadLotteryPrizes() {
+      const res = await fetch(`${SCRIPT_URL}?action=lottery_prizes&t=${Date.now()}`);
+      prizeData = await res.json();
+    }
+
+    function renderMemberProfile() {
+      document.getElementById('pointsDisplay').innerText = memberData.currentPoints || 0;
+      document.getElementById('totalSpendDisplay').innerText = `$${Number(memberData.totalSpend || 0).toLocaleString()}`;
+      document.getElementById('spinCountDisplay').innerText = memberData.totalSpins || 0;
+      document.getElementById('tierText').innerText = `會員等級：${memberData.memberTier || '一般會員'}`;
+
+      const spinBtn = document.getElementById('spinBtn');
+      if ((memberData.currentPoints || 0) < LOTTERY_COST) {
+        spinBtn.disabled = true;
+        spinBtn.innerText = `點數不足（需要 ${LOTTERY_COST} 點）`;
+      } else {
+        spinBtn.disabled = false;
+        spinBtn.innerText = `立即抽獎（扣 ${LOTTERY_COST} 點）`;
+      }
+    }
+
+    function renderQrCode() {
+      const container = document.getElementById('qrcode');
+      container.innerHTML = '';
+      new QRCode(container, {
+        text: `https://liff.line.me/${LIFF_ID}?act=staff_add&uid=${encodeURIComponent(currentProfile.userId)}&name=${encodeURIComponent(currentProfile.displayName)}`,
+        width: 180,
+        height: 180,
+        colorDark: '#0e5f5c',
+        colorLight: '#ffffff'
+      });
+    }
+
+    function renderWheelLabels() {
+      const wheel = document.getElementById('wheel');
+      wheel.querySelectorAll('.wheel-label').forEach(el => el.remove());
+
+      const shown = prizeData.slice(0, 6);
+      shown.forEach((prize, idx) => {
+        const angle = idx * 60 + 30;
+        const label = document.createElement('div');
+        label.className = 'wheel-label';
+        label.style.transform = `rotate(${angle}deg) translate(0, -112px) rotate(90deg)`;
+        label.textContent = prize.prizeName || `獎項 ${idx + 1}`;
+        wheel.appendChild(label);
+      });
+    }
+
+    function renderPrizeList() {
+      const list = document.getElementById('prizeList');
+      list.innerHTML = '';
+      prizeData.forEach((prize, idx) => {
+        const item = document.createElement('div');
+        item.className = 'prize-item';
+        item.innerHTML = `
+          <strong>獎項 ${idx + 1}｜${escapeHtml(prize.prizeName || '')}</strong>
+          <span>${escapeHtml(prize.prizeDesc || '')}</span>
+          <span>庫存：${prize.stock === '' || prize.stock === null || prize.stock === undefined ? '不限' : prize.stock}</span>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    async function spinLottery() {
+      if (spinning) return;
+      if ((memberData.currentPoints || 0) < LOTTERY_COST) {
+        alert('點數不足，無法抽獎');
+        return;
+      }
+      if (!confirm(`確定要消耗 ${LOTTERY_COST} 點進行抽獎嗎？`)) return;
+
+      spinning = true;
+      const btn = document.getElementById('spinBtn');
+      btn.disabled = true;
+      btn.innerText = '抽獎中...';
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'spin_lottery',
+            userId: currentProfile.userId,
+            displayName: currentProfile.displayName
+          })
+        });
+        const result = await res.json();
+
+        if (!result.ok) {
+          alert(result.message || '抽獎失敗');
+          spinning = false;
+          renderMemberProfile();
+          return;
+        }
+
+        animateWheelToPrize(result.prizeIndex);
+        setTimeout(async () => {
+          document.getElementById('lotteryResult').classList.remove('hidden');
+          document.getElementById('lotteryResult').innerHTML = `🎉 恭喜抽中：<strong>${escapeHtml(result.prizeName)}</strong><br>已扣除 ${result.costPoints} 點，目前剩餘 ${result.currentPoints} 點。`;
+          await loadMemberProfile();
+          renderMemberProfile();
+          spinning = false;
+        }, 5400);
+      } catch (err) {
+        console.error(err);
+        alert('通訊失敗，請稍後再試');
+        spinning = false;
+        renderMemberProfile();
+      }
+    }
+
+    function animateWheelToPrize(prizeIndex) {
+      const wheel = document.getElementById('wheel');
+      const centerAngle = prizeIndex * 60 + 30;
+      const target = 360 - centerAngle;
+      currentRotation += 360 * 6 + target;
+      wheel.style.transform = `rotate(${currentRotation}deg)`;
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    init();
+  </script>
+</body>
+</html>
