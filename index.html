@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>嘎比嘎比孔雀魚水族工作室｜會員中心</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -21,6 +21,9 @@
       --gold: #ffd54f;
       --gold-soft: #fff7cc;
       --line: #e7f0f0;
+      --tab-bg: #ffffff;
+      --tab-active: #0e5f5c;
+      --tab-inactive: #7a8f8e;
     }
 
     * { box-sizing: border-box; }
@@ -36,7 +39,7 @@
     .page {
       max-width: 460px;
       margin: 0 auto;
-      padding: 18px 14px 36px;
+      padding: 18px 14px 110px;
     }
 
     .shell {
@@ -595,6 +598,53 @@
       animation: confettiBurst 1.25s cubic-bezier(0.11, 0.82, 0.18, 1) forwards;
     }
 
+    .bottom-tabs {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 14px;
+      width: min(460px, calc(100vw - 28px));
+      background: rgba(255,255,255,0.96);
+      border: 1px solid rgba(231,240,240,0.95);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 8px;
+      z-index: 40;
+      backdrop-filter: blur(10px);
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      border-radius: 12px;
+      padding: 10px 6px;
+      color: var(--tab-inactive);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--brand-soft);
+      color: var(--tab-active);
+      box-shadow: inset 0 0 0 1px rgba(14,95,92,0.08);
+    }
+
+    .tab-btn .emoji {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+
+    .tab-spacer {
+      height: 8px;
+    }
+
     .footer-text {
       text-align: center;
       color: var(--muted);
@@ -634,6 +684,7 @@
             </div>
           </div>
 
+          <!-- 首頁 -->
           <div id="memberHome">
             <div class="card qrcode-wrap">
               <div class="section-label" style="color:#6d8382;">會員 QR CODE</div>
@@ -641,11 +692,15 @@
               <div class="help-text">結帳時出示此 QR code，店員掃描後輸入本次消費金額，系統會自動換算點數。</div>
             </div>
 
-            <button id="openLotteryBtn" class="btn btn-accent">消耗 6 點開始抽獎</button>
-            <button id="openCouponsBtn" class="btn btn-primary">查看我的獎品</button>
-            <button onclick="liff.closeWindow()" class="btn btn-ghost">關閉視窗</button>
+            <div class="card">
+              <div class="section-label" style="color:#6d8382; text-align:center;">快速入口</div>
+              <button id="homeGoLotteryBtn" class="btn btn-accent">前往抽獎</button>
+              <button id="homeGoCouponsBtn" class="btn btn-primary">前往我的獎品</button>
+              <button onclick="liff.closeWindow()" class="btn btn-ghost">關閉視窗</button>
+            </div>
           </div>
 
+          <!-- 抽獎頁 -->
           <div id="lotteryView" class="hidden">
             <div class="card wheel-panel">
               <div class="section-label" style="color:#6d8382;">會員轉盤抽獎</div>
@@ -664,10 +719,7 @@
               </div>
 
               <div id="spinHint" class="spin-hint">點擊下方按鈕開始抽獎</div>
-
               <button id="spinBtn" class="btn btn-danger">立即抽獎（扣 6 點）</button>
-              <button id="backHomeFromLotteryBtn" class="btn btn-ghost">返回會員首頁</button>
-
               <div id="lotteryResult" class="result-box hidden"></div>
             </div>
 
@@ -677,6 +729,7 @@
             </div>
           </div>
 
+          <!-- 獎品頁 -->
           <div id="couponView" class="hidden">
             <div class="card">
               <div class="section-label" style="color:#6d8382; text-align:center;">我的獎品</div>
@@ -690,8 +743,6 @@
 
               <div class="coupon-section-title">已過期</div>
               <div id="expiredList" class="prize-list"></div>
-
-              <button id="backHomeFromCouponsBtn" class="btn btn-ghost">返回會員首頁</button>
             </div>
 
             <div id="couponQrCard" class="card hidden">
@@ -707,6 +758,24 @@
 
               <button id="hideCouponQrBtn" class="btn btn-ghost">收起兌換碼</button>
             </div>
+          </div>
+
+          <div class="tab-spacer"></div>
+
+          <!-- 底部 tab -->
+          <div id="memberTabs" class="bottom-tabs">
+            <button id="tabHome" class="tab-btn active" type="button">
+              <span class="emoji">🏠</span>
+              首頁
+            </button>
+            <button id="tabLottery" class="tab-btn" type="button">
+              <span class="emoji">🎯</span>
+              抽獎
+            </button>
+            <button id="tabCoupons" class="tab-btn" type="button">
+              <span class="emoji">🎁</span>
+              獎品
+            </button>
           </div>
         </div>
 
@@ -773,6 +842,7 @@
     let memberData = null;
     let prizeData = [];
     let couponData = { unredeemed: [], redeemed: [], expired: [] };
+    let couponLoaded = false;
     let currentRotation = 0;
     let spinning = false;
     let audioContext = null;
@@ -818,13 +888,11 @@
       renderQrCode();
       renderWheelLabels();
       renderPrizeList();
+      bindTabActions();
+      setActiveTab('home');
 
-      document.getElementById('openLotteryBtn').onclick = openLotteryView;
-      document.getElementById('openCouponsBtn').onclick = openCouponView;
-      document.getElementById('backHomeFromLotteryBtn').onclick = backHomeFromLottery;
-      document.getElementById('backHomeFromCouponsBtn').onclick = backHomeFromCoupons;
-      document.getElementById('spinBtn').onclick = spinLottery;
-      document.getElementById('hideCouponQrBtn').onclick = hideCouponQrCard;
+      // 背景預載獎品資料，讓「出示兌換碼」更快
+      preloadCouponsInBackground();
     }
 
     function showMemberOnly() {
@@ -833,35 +901,82 @@
       document.getElementById('staffRedeemView').classList.add('hidden');
     }
 
-    function openLotteryView() {
-      document.getElementById('memberHome').classList.add('hidden');
-      document.getElementById('couponView').classList.add('hidden');
-      document.getElementById('lotteryView').classList.remove('hidden');
-      hideCouponQrCard();
+    function bindTabActions() {
+      document.getElementById('tabHome').onclick = () => switchTab('home');
+      document.getElementById('tabLottery').onclick = () => switchTab('lottery');
+      document.getElementById('tabCoupons').onclick = () => switchTab('coupons');
+
+      document.getElementById('homeGoLotteryBtn').onclick = () => switchTab('lottery');
+      document.getElementById('homeGoCouponsBtn').onclick = () => switchTab('coupons');
+      document.getElementById('hideCouponQrBtn').onclick = hideCouponQrCard;
+
+      document.getElementById('spinBtn').onclick = spinLottery;
     }
 
-    async function openCouponView() {
-      await loadMemberCoupons();
-      renderCouponLists();
+    async function switchTab(tabName) {
+      if (tabName === 'lottery' && spinning) return;
+
+      if (tabName === 'home') {
+        showHomeTab();
+        return;
+      }
+
+      if (tabName === 'lottery') {
+        showLotteryTab();
+        return;
+      }
+
+      if (tabName === 'coupons') {
+        await showCouponsTab();
+      }
+    }
+
+    function setActiveTab(tabName) {
+      const tabs = [
+        { id: 'tabHome', key: 'home' },
+        { id: 'tabLottery', key: 'lottery' },
+        { id: 'tabCoupons', key: 'coupons' }
+      ];
+
+      tabs.forEach(tab => {
+        document.getElementById(tab.id).classList.toggle('active', tab.key === tabName);
+      });
+    }
+
+    function showHomeTab() {
+      hideCouponQrCard();
+      document.getElementById('memberHome').classList.remove('hidden');
+      document.getElementById('lotteryView').classList.add('hidden');
+      document.getElementById('couponView').classList.add('hidden');
+      setActiveTab('home');
+    }
+
+    function showLotteryTab() {
+      hideCouponQrCard();
+      document.getElementById('memberHome').classList.add('hidden');
+      document.getElementById('lotteryView').classList.remove('hidden');
+      document.getElementById('couponView').classList.add('hidden');
+      setActiveTab('lottery');
+    }
+
+    async function showCouponsTab() {
+      if (!couponLoaded) {
+        await loadMemberCoupons();
+        renderCouponLists();
+      }
       document.getElementById('memberHome').classList.add('hidden');
       document.getElementById('lotteryView').classList.add('hidden');
       document.getElementById('couponView').classList.remove('hidden');
+      setActiveTab('coupons');
     }
 
-    function backHomeFromLottery() {
-      if (spinning) return;
-      document.getElementById('lotteryView').classList.add('hidden');
-      document.getElementById('memberHome').classList.remove('hidden');
-      document.getElementById('lotteryResult').classList.add('hidden');
-      document.getElementById('lotteryResult').innerHTML = '';
-      resetWheelCenter();
-      setSpinHint('點擊下方按鈕開始抽獎');
-    }
-
-    function backHomeFromCoupons() {
-      document.getElementById('couponView').classList.add('hidden');
-      document.getElementById('memberHome').classList.remove('hidden');
-      hideCouponQrCard();
+    async function preloadCouponsInBackground() {
+      try {
+        await loadMemberCoupons();
+        renderCouponLists();
+      } catch (err) {
+        console.error('背景預載獎品失敗', err);
+      }
     }
 
     async function initStaffMode(params) {
@@ -1050,14 +1165,20 @@
       prizeData = await res.json();
     }
 
-    async function loadMemberCoupons() {
+    async function loadMemberCoupons(force = false) {
+      if (couponLoaded && !force) return couponData;
+
       const res = await fetch(`${SCRIPT_URL}?action=member_coupons&uid=${encodeURIComponent(currentProfile.userId)}&t=${Date.now()}`);
       couponData = await res.json();
 
       if (!couponData.ok) {
         alert(couponData.message || '載入獎品失敗');
         couponData = { unredeemed: [], redeemed: [], expired: [] };
+      } else {
+        couponLoaded = true;
       }
+
+      return couponData;
     }
 
     function renderMemberProfile() {
@@ -1152,7 +1273,7 @@
         const btn = document.createElement('button');
         btn.className = 'btn btn-primary';
         btn.innerText = '出示兌換碼';
-        btn.onclick = () => showCouponQr(coupon);
+        btn.onclick = () => showCouponQrInstant(coupon);
         item.appendChild(btn);
       }
 
@@ -1191,46 +1312,30 @@
       }
     }
 
-    async function showCouponQr(coupon) {
-      try {
-        const res = await fetch(
-          `${SCRIPT_URL}?action=coupon_detail&spinId=${encodeURIComponent(coupon.spinId)}&code=${encodeURIComponent(coupon.redeemCode)}&t=${Date.now()}`
-        );
-        const detail = await res.json();
-
-        if (!detail.ok) {
-          alert(detail.message || '無法讀取這張券');
-          return;
-        }
-
-        if (detail.couponStatus !== 'UNREDEEMED') {
-          alert(`這張券目前狀態為：${detail.couponStatusText}`);
-          await loadMemberCoupons();
-          renderCouponLists();
-          hideCouponQrCard();
-          return;
-        }
-
-        document.getElementById('couponPrizeNameText').innerText = detail.prizeName || '';
-        document.getElementById('couponSpinTimeText').innerText = `中獎時間：${detail.spinTime || ''}`;
-        document.getElementById('couponStatusText').innerText = `狀態：${detail.couponStatusText || ''}`;
-        document.getElementById('couponRedeemCodeText').innerText = detail.redeemCode || '';
-
-        const qrContainer = document.getElementById('couponQrCode');
-        qrContainer.innerHTML = '';
-        new QRCode(qrContainer, {
-          text: detail.redeemQrPayload,
-          width: 180,
-          height: 180,
-          colorDark: '#0e5f5c',
-          colorLight: '#ffffff'
-        });
-
-        document.getElementById('couponQrCard').classList.remove('hidden');
-      } catch (err) {
-        console.error(err);
-        alert('載入兌換碼失敗');
+    // 秒開版：直接使用 member_coupons 已載入的資料，不再額外 fetch coupon_detail
+    function showCouponQrInstant(coupon) {
+      if (!coupon || coupon.couponStatus !== 'UNREDEEMED') {
+        alert('這張券目前無法出示兌換碼');
+        return;
       }
+
+      document.getElementById('couponPrizeNameText').innerText = coupon.prizeName || '';
+      document.getElementById('couponSpinTimeText').innerText = `中獎時間：${coupon.spinTime || ''}`;
+      document.getElementById('couponStatusText').innerText = `狀態：${coupon.couponStatusText || ''}`;
+      document.getElementById('couponRedeemCodeText').innerText = coupon.redeemCode || '';
+
+      const qrContainer = document.getElementById('couponQrCode');
+      qrContainer.innerHTML = '';
+      new QRCode(qrContainer, {
+        text: coupon.redeemQrPayload,
+        width: 180,
+        height: 180,
+        colorDark: '#0e5f5c',
+        colorLight: '#ffffff'
+      });
+
+      document.getElementById('couponQrCard').classList.remove('hidden');
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
     function hideCouponQrCard() {
@@ -1538,11 +1643,9 @@
       spinning = true;
 
       const btn = document.getElementById('spinBtn');
-      const backBtn = document.getElementById('backHomeFromLotteryBtn');
       const resultBox = document.getElementById('lotteryResult');
 
       btn.disabled = true;
-      backBtn.disabled = true;
       btn.innerText = '抽獎中...';
       resultBox.classList.add('hidden');
       resultBox.innerHTML = '';
@@ -1569,7 +1672,6 @@
           setSpinHint('抽獎失敗，請稍後再試');
           alert(result.message || '抽獎失敗');
           spinning = false;
-          backBtn.disabled = false;
           await loadMemberProfile();
           renderMemberProfile();
           return;
@@ -1589,14 +1691,17 @@
 
         await loadMemberProfile();
         renderMemberProfile();
-        await loadMemberCoupons();
+
+        // 抽完後強制刷新券資料，讓「我的獎品」馬上有最新內容
+        couponLoaded = false;
+        await loadMemberCoupons(true);
+        renderCouponLists();
 
         await sleep(1000);
         resetWheelCenter();
-        setSpinHint('通知已送出，可再次抽獎或返回首頁');
+        setSpinHint('通知已送出，可再次抽獎或切到獎品查看');
 
         spinning = false;
-        backBtn.disabled = false;
       } catch (err) {
         console.error(err);
         stopAllSpinEffects();
@@ -1605,9 +1710,17 @@
         setSpinHint('通訊失敗，請稍後再試');
         alert('通訊失敗，請稍後再試');
         spinning = false;
-        backBtn.disabled = false;
         await loadMemberProfile();
         renderMemberProfile();
+      } finally {
+        const btn = document.getElementById('spinBtn');
+        if ((memberData.currentPoints || 0) < LOTTERY_COST) {
+          btn.disabled = true;
+          btn.innerText = `點數不足（需要 ${LOTTERY_COST} 點）`;
+        } else {
+          btn.disabled = false;
+          btn.innerText = `立即抽獎（扣 ${LOTTERY_COST} 點）`;
+        }
       }
     }
 
