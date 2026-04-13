@@ -1267,8 +1267,7 @@
 
       setTimeout(() => {
         ensureLotteryDataLoaded().catch(err => console.error('預載獎項失敗', err));
-        ensureCouponDataLoaded().catch(err => console.error('預載獎品失敗', err));
-      }, 350);
+      }, 80);
     }
 
     function showMemberOnly() {
@@ -1413,11 +1412,15 @@
     function renderCouponSummary() {
       const pendingCount = (couponData && couponData.unredeemed)
         ? couponData.unredeemed.length
-        : 0;
+        : (memberData && memberData.pendingCouponCount) || 0;
 
       const pendingEl = document.getElementById('pendingCouponCountDisplay');
       if (pendingEl) {
         pendingEl.innerText = pendingCount;
+      }
+
+      if (memberData) {
+        memberData.pendingCouponCount = pendingCount;
       }
     }
 
@@ -1598,7 +1601,7 @@
     }
 
     async function loadMemberProfile() {
-      const res = await fetch(`${SCRIPT_URL}?action=member_profile&uid=${encodeURIComponent(currentProfile.userId)}&name=${encodeURIComponent(currentProfile.displayName)}&t=${Date.now()}`);
+      const res = await fetch(`${SCRIPT_URL}?action=member_home_summary&uid=${encodeURIComponent(currentProfile.userId)}&name=${encodeURIComponent(currentProfile.displayName)}&t=${Date.now()}`);
       memberData = await res.json();
       return memberData;
     }
@@ -1608,6 +1611,11 @@
 
       document.getElementById('pointsDisplay').innerText = memberData.currentPoints || 0;
       document.getElementById('tierText').innerText = `${memberData.memberTier || '品牌會員'}`;
+
+      const pendingEl = document.getElementById('pendingCouponCountDisplay');
+      if (pendingEl && memberData.pendingCouponCount !== undefined) {
+        pendingEl.innerText = memberData.pendingCouponCount || 0;
+      }
 
       const spinBtn = document.getElementById('spinBtn');
       if ((memberData.currentPoints || 0) < LOTTERY_COST) {
@@ -2361,12 +2369,12 @@
         await sleep(700);
         await triggerNotify(result.spinId);
 
-        await loadMemberProfile();
+        memberData = memberData || {};
+        memberData.currentPoints = result.currentPoints;
+        memberData.pendingCouponCount = Number(memberData.pendingCouponCount || 0) + 1;
         renderMemberProfile();
 
         couponLoaded = false;
-        await ensureCouponDataLoaded(true);
-        renderCouponLists();
 
         await sleep(1000);
         resetWheelCenter();
