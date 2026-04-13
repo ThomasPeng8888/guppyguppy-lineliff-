@@ -1569,7 +1569,7 @@
               <div class="section-label" style="color:#6d8382; text-align:center;">快速入口</div>
               <button id="homeGoLotteryBtn" class="btn btn-accent">前往抽獎</button>
               <button id="homeGoCampaignBtn" class="btn btn-primary">前往活動抽獎</button>
-              <button id="homeGoCampaignAdminBtn" class="btn btn-success hidden">活動管理後台</button>
+              <button id="homeGoCampaignAdminBtn" class="btn btn-success hidden">管理員主控台</button>
               <button id="homeGoCouponsBtn" class="btn btn-primary">前往我的獎品</button>
               <button onclick="liff.closeWindow()" class="btn btn-ghost">關閉視窗</button>
             </div>
@@ -1763,10 +1763,10 @@
 
         <div id="campaignAdminView" class="hidden">
           <div class="card">
-            <div class="section-label" style="color:#6d8382; text-align:center;">活動管理後台</div>
-            <div class="help-text">你可以在這裡建立活動、上架或下架、立即截止登記、手動抽獎。這樣就不用再回 Google Sheet 手動調整欄位。</div>
+            <div class="section-label" style="color:#6d8382; text-align:center;">管理員主控台</div>
+            <div class="help-text">這裡是整合後的管理員主控台首頁。你可以在同一個入口查看會員統計、常態抽獎、核銷中心與活動儀表板，也能直接建立活動、截止登記與立即抽獎。</div>
 
-            <div class="grid-one">
+            <div class="admin-mini-grid" style="margin-top:12px;">
               <div class="mini-stat">
                 <div class="label">活動總數</div>
                 <div id="adminTotalCampaignsDisplay" class="value">--</div>
@@ -1780,8 +1780,24 @@
                 <div id="adminAwaitingCampaignsDisplay" class="value">--</div>
               </div>
               <div class="mini-stat">
-                <div class="label">待核銷獎品</div>
+                <div class="label">待核銷總數</div>
                 <div id="adminPendingRedeemDisplay" class="value">--</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">會員總數</div>
+                <div id="adminTotalMembersDisplay" class="value">--</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">有消費會員</div>
+                <div id="adminPurchasedMembersDisplay" class="value">--</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">常態待核銷</div>
+                <div id="adminRegularPendingDisplay" class="value">--</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">活動待核銷</div>
+                <div id="adminCampaignPendingDisplay" class="value">--</div>
               </div>
             </div>
 
@@ -1789,6 +1805,10 @@
               <button id="adminBackToMemberBtn" class="btn btn-ghost" type="button">返回會員中心</button>
               <button id="adminRefreshBtn" class="btn btn-primary" type="button">重新整理</button>
               <button id="adminCreateNewBtn" class="btn btn-accent" type="button">新增活動</button>
+              <button id="adminJumpOverviewBtn" class="btn btn-success" type="button">查看主控台總覽</button>
+              <button id="adminJumpFormBtn" class="btn btn-ghost" type="button">前往活動表單</button>
+              <button id="adminJumpCampaignListBtn" class="btn btn-ghost" type="button">前往活動列表</button>
+              <button id="adminJumpDashboardBtn" class="btn btn-ghost" type="button">前往活動儀表板</button>
             </div>
 
             <div class="admin-filter-bar">
@@ -1805,7 +1825,40 @@
             </div>
           </div>
 
-          <div class="card">
+          <div id="adminOverviewSection" class="card">
+            <div class="section-label" style="color:#6d8382; text-align:center;">主控台總覽</div>
+            <div class="help-text">把會員統計、常態抽獎、核銷中心與近期紀錄集中在同一個入口，讓你一打開就知道今天要處理什麼。</div>
+
+            <div class="dashboard-detail-grid">
+              <div class="dashboard-panel">
+                <div class="dashboard-panel-title">會員統計</div>
+                <div id="adminMemberStatGrid" class="admin-mini-grid"></div>
+              </div>
+
+              <div class="dashboard-panel">
+                <div class="dashboard-panel-title">常態抽獎總覽</div>
+                <div id="adminLotteryStatGrid" class="admin-mini-grid"></div>
+              </div>
+
+              <div class="dashboard-panel">
+                <div class="dashboard-panel-title">核銷中心</div>
+                <div id="adminRedeemStatGrid" class="admin-mini-grid"></div>
+                <div id="adminPendingRedeemTableWrap"></div>
+              </div>
+
+              <div class="dashboard-panel">
+                <div class="dashboard-panel-title">近期消費集點</div>
+                <div id="adminRecentPurchaseTableWrap"></div>
+              </div>
+
+              <div class="dashboard-panel">
+                <div class="dashboard-panel-title">近期中獎紀錄</div>
+                <div id="adminRecentWinTableWrap"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="adminFormSection" class="card">
             <div class="section-label" style="color:#6d8382; text-align:center;">建立 / 編輯活動</div>
 
             <input id="adminCampaignId" type="hidden">
@@ -1894,16 +1947,16 @@
             </div>
           </div>
 
-          <div class="card">
+          <div id="adminCampaignListSection" class="card">
             <div class="section-label" style="color:#6d8382; text-align:center;">現有活動列表</div>
             <div class="help-text">支援活動搜尋 / 篩選、名單檢視、活動複製、立即抽獎與候補遞補。</div>
 
             <div id="campaignAdminList" class="campaign-admin-list">
-              <div class="campaign-empty">活動後台資料載入中...</div>
+              <div class="campaign-empty">主控台資料載入中...</div>
             </div>
           </div>
 
-          <div class="card">
+          <div id="adminCampaignDashboardSection" class="card">
             <div class="section-label" style="color:#6d8382; text-align:center;">活動儀表板</div>
             <div class="help-text">點選活動卡片上的「名單 / 儀表板」即可查看已登記名單、中獎名單、核銷狀態與匯出資料。</div>
 
@@ -3655,8 +3708,16 @@
     function bindCampaignAdminActions() {
       document.getElementById('adminBackToMemberBtn').onclick = backToMemberCenter;
       document.getElementById('adminRefreshBtn').onclick = () => loadCampaignAdminDashboard(true);
-      document.getElementById('adminCreateNewBtn').onclick = () => setDefaultCampaignAdminForm(true);
+      document.getElementById('adminCreateNewBtn').onclick = () => { setDefaultCampaignAdminForm(true); scrollToSection('adminFormSection'); };
       document.getElementById('adminClearFormBtn').onclick = () => setDefaultCampaignAdminForm(true);
+      const jumpOverviewBtn = document.getElementById('adminJumpOverviewBtn');
+      if (jumpOverviewBtn) jumpOverviewBtn.onclick = () => scrollToSection('adminOverviewSection');
+      const jumpFormBtn = document.getElementById('adminJumpFormBtn');
+      if (jumpFormBtn) jumpFormBtn.onclick = () => scrollToSection('adminFormSection');
+      const jumpListBtn = document.getElementById('adminJumpCampaignListBtn');
+      if (jumpListBtn) jumpListBtn.onclick = () => scrollToSection('adminCampaignListSection');
+      const jumpDashboardBtn = document.getElementById('adminJumpDashboardBtn');
+      if (jumpDashboardBtn) jumpDashboardBtn.onclick = () => scrollToSection('adminCampaignDashboardSection');
       document.getElementById('adminSaveCampaignBtn').onclick = saveCampaignAdminForm;
       document.getElementById('adminCampaignSearchInput').addEventListener('input', applyCampaignAdminFilters);
       document.getElementById('adminCampaignStatusFilter').addEventListener('change', applyCampaignAdminFilters);
@@ -3719,7 +3780,7 @@
       document.getElementById('adminAutoDraw').checked = !!item.autoDraw;
       document.getElementById('adminPublishFlag').checked = !!item.publishFlag;
       document.getElementById('adminFormHint').innerText = `目前正在編輯：${item.campaignName || ''}（${item.campaignId || ''}）`;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollToSection('adminFormSection');
     }
 
     function collectCampaignAdminFormPayload() {
@@ -3756,11 +3817,166 @@
       return await res.json();
     }
 
-    function renderCampaignAdminSummary(summary) {
+    function renderCampaignAdminSummary(data) {
+      const summary = (data && data.summary) || {};
+      const portalSummary = (data && data.portal && data.portal.summary) || {};
       document.getElementById('adminTotalCampaignsDisplay').innerText = summary.totalCampaigns || 0;
       document.getElementById('adminOpenCampaignsDisplay').innerText = summary.openCount || 0;
       document.getElementById('adminAwaitingCampaignsDisplay').innerText = summary.awaitingDrawCount || 0;
-      document.getElementById('adminPendingRedeemDisplay').innerText = summary.pendingRedeemCount || 0;
+      document.getElementById('adminPendingRedeemDisplay').innerText = portalSummary.pendingRedeemTotal || summary.pendingRedeemCount || 0;
+      const totalMembersEl = document.getElementById('adminTotalMembersDisplay');
+      if (totalMembersEl) totalMembersEl.innerText = portalSummary.totalMembers || 0;
+      const purchasedEl = document.getElementById('adminPurchasedMembersDisplay');
+      if (purchasedEl) purchasedEl.innerText = portalSummary.purchasedMembers || 0;
+      const regularPendingEl = document.getElementById('adminRegularPendingDisplay');
+      if (regularPendingEl) regularPendingEl.innerText = portalSummary.regularPendingRedeemCount || 0;
+      const campaignPendingEl = document.getElementById('adminCampaignPendingDisplay');
+      if (campaignPendingEl) campaignPendingEl.innerText = portalSummary.campaignPendingRedeemCount || 0;
+    }
+
+    function formatMetricValue(value, suffix) {
+      const num = Number(value);
+      if (Number.isFinite(num)) {
+        return `${num.toLocaleString()}${suffix || ''}`;
+      }
+      return `${value || 0}${suffix || ''}`;
+    }
+
+    function renderMiniGridItems(targetId, items) {
+      const el = document.getElementById(targetId);
+      if (!el) return;
+      if (!items || !items.length) {
+        el.innerHTML = '<div class="dashboard-empty">目前沒有可顯示資料</div>';
+        return;
+      }
+      el.innerHTML = items.map(item => `
+        <div class="admin-mini-box">
+          <span>${escapeHtml(item.label || '')}</span>
+          <strong>${escapeHtml(item.value || '0')}</strong>
+        </div>
+      `).join('');
+    }
+
+    function renderSimpleDashboardTable(headers, rows, emptyText) {
+      if (!rows || !rows.length) {
+        return `<div class="dashboard-empty">${escapeHtml(emptyText || '目前沒有資料')}</div>`;
+      }
+      return `
+        <div class="dashboard-table-wrap">
+          <table class="dashboard-table">
+            <thead>
+              <tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderAdminPortalSections(portal) {
+      portal = portal || {};
+      const memberStats = portal.memberStats || {};
+      const regular = portal.regularLotteryStats || {};
+      const redeem = portal.redemptionStats || {};
+
+      renderMiniGridItems('adminMemberStatGrid', [
+        { label: '會員總數', value: formatMetricValue(memberStats.totalMembers) },
+        { label: '有消費會員', value: formatMetricValue(memberStats.purchasedMembers) },
+        { label: '近 30 天活躍', value: formatMetricValue(memberStats.active30DaysMembers) },
+        { label: 'VIP / 金卡', value: formatMetricValue(memberStats.vipLikeMembers) },
+        { label: '總消費', value: formatMetricValue(memberStats.totalSpend, ' 元') },
+        { label: '目前點數池', value: formatMetricValue(memberStats.currentPointsOutstanding, ' 點') },
+        { label: '累計抽獎次數', value: formatMetricValue(memberStats.totalSpins) },
+        { label: '平均客單', value: formatMetricValue(memberStats.averageSpendPerPurchasedMember, ' 元') }
+      ]);
+
+      renderMiniGridItems('adminLotteryStatGrid', [
+        { label: '啟用獎項', value: formatMetricValue(regular.enabledPrizeCount) },
+        { label: '低庫存獎項', value: formatMetricValue(regular.lowStockPrizeCount) },
+        { label: '常態中獎總數', value: formatMetricValue(regular.totalDrawCount) },
+        { label: '近 30 天抽獎', value: formatMetricValue(regular.drawsLast30Days) },
+        { label: '待核銷', value: formatMetricValue(regular.pendingRedeemCount) },
+        { label: '已核銷', value: formatMetricValue(regular.redeemedCount) },
+        { label: '已過期', value: formatMetricValue(regular.expiredCount) },
+        { label: '剩餘獎池庫存', value: formatMetricValue(regular.totalPrizeStockVisible) }
+      ]);
+
+      renderMiniGridItems('adminRedeemStatGrid', [
+        { label: '待核銷總數', value: formatMetricValue(redeem.pendingRedeemTotal) },
+        { label: '常態待核銷', value: formatMetricValue(redeem.regularPendingRedeemCount) },
+        { label: '活動待核銷', value: formatMetricValue(redeem.campaignPendingRedeemCount) },
+        { label: '常態已核銷', value: formatMetricValue(redeem.regularRedeemedCount) },
+        { label: '活動已核銷', value: formatMetricValue(redeem.campaignRedeemedCount) },
+        { label: '7 天內將到期', value: formatMetricValue(redeem.expiringSoonCount) }
+      ]);
+
+      const pendingRows = (portal.recentPendingRedeems || []).map(row => [
+        `<span class="table-badge">${escapeHtml(row.sourceTypeText || '')}</span>`,
+        escapeHtml(row.memberName || ''),
+        escapeHtml(row.prizeName || ''),
+        escapeHtml(row.redeemCode || ''),
+        escapeHtml(row.statusText || ''),
+        escapeHtml(row.expireAt || '不限')
+      ]);
+      document.getElementById('adminPendingRedeemTableWrap').innerHTML = renderSimpleDashboardTable(
+        ['來源', '會員', '獎品', '兌換碼', '狀態', '到期'],
+        pendingRows,
+        '目前沒有待核銷資料'
+      );
+
+      const purchaseRows = (portal.recentPurchases || []).map(row => [
+        escapeHtml(row.txnTime || ''),
+        escapeHtml(row.memberName || ''),
+        formatMetricValue(row.amount || 0, ' 元'),
+        formatMetricValue(row.earnedPoints || 0, ' 點'),
+        formatMetricValue(row.balanceAfter || 0, ' 點'),
+        escapeHtml(row.orderNo || '—')
+      ]);
+      document.getElementById('adminRecentPurchaseTableWrap').innerHTML = renderSimpleDashboardTable(
+        ['時間', '會員', '消費金額', '獲得點數', '目前點數', '訂單號'],
+        purchaseRows,
+        '目前沒有最近消費集點紀錄'
+      );
+
+      const mixedWinRows = [];
+      (portal.recentLotteryWinners || []).forEach(row => {
+        mixedWinRows.push([
+          `<span class="table-badge">常態抽獎</span>`,
+          escapeHtml(row.winTime || ''),
+          escapeHtml(row.memberName || ''),
+          escapeHtml(row.prizeName || ''),
+          escapeHtml(row.statusText || ''),
+          escapeHtml(row.redeemCode || '')
+        ]);
+      });
+      (portal.recentCampaignWinners || []).forEach(row => {
+        mixedWinRows.push([
+          `<span class="table-badge">活動抽獎</span>`,
+          escapeHtml(row.drawTime || ''),
+          escapeHtml(row.memberName || ''),
+          escapeHtml(`${row.campaignName || ''}｜${row.prizeName || ''}`),
+          escapeHtml(row.statusText || ''),
+          escapeHtml(row.redeemCode || '')
+        ]);
+      });
+      mixedWinRows.sort((a, b) => {
+        const at = new Date(String(a[1]).replace(/\//g, '-')).getTime() || 0;
+        const bt = new Date(String(b[1]).replace(/\//g, '-')).getTime() || 0;
+        return bt - at;
+      });
+      document.getElementById('adminRecentWinTableWrap').innerHTML = renderSimpleDashboardTable(
+        ['來源', '時間', '會員', '獎項', '狀態', '兌換碼'],
+        mixedWinRows.slice(0, 10),
+        '目前沒有最近中獎資料'
+      );
+    }
+
+    function scrollToSection(sectionId) {
+      const el = document.getElementById(sectionId);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function applyCampaignAdminFilters() {
@@ -4049,17 +4265,18 @@
     }
 
     async function loadCampaignAdminDashboard(force = false) {
-      document.getElementById('campaignAdminList').innerHTML = '<div class="campaign-empty">活動後台資料載入中...</div>';
+      document.getElementById('campaignAdminList').innerHTML = '<div class="campaign-empty">主控台資料載入中...</div>';
       try {
         const res = await fetch(`${SCRIPT_URL}?action=campaign_admin_dashboard&staffId=${encodeURIComponent(currentProfile.userId)}&staffName=${encodeURIComponent(currentProfile.displayName)}&t=${force ? Date.now() : ''}`);
         const data = await res.json();
         if (!data.ok) {
-          alert(data.message || '載入活動管理後台失敗');
+          alert(data.message || '載入管理員主控台失敗');
           if (data.message === 'NO_PERMISSION') backToMemberCenter();
           return;
         }
         campaignAdminDashboard = data;
-        renderCampaignAdminSummary(data.summary || {});
+        renderCampaignAdminSummary(data);
+        renderAdminPortalSections(data.portal || {});
         applyCampaignAdminFilters();
 
         const availableIds = new Set((data.campaigns || []).map(item => item.campaignId));
@@ -4072,7 +4289,7 @@
         }
       } catch (err) {
         console.error(err);
-        alert('載入活動管理後台失敗');
+        alert('載入管理員主控台失敗');
       }
     }
 
