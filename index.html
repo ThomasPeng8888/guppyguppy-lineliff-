@@ -1515,32 +1515,7 @@
       return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`;
     }
 
-    function compressWheelPrizeText(name) {
-      let text = String(name || '').replace(/\s+/g, '').trim();
-
-      text = text
-        .replace(/會員限定/g, '')
-        .replace(/會員/g, '')
-        .replace(/限定/g, '')
-        .replace(/優惠券/g, '券')
-        .replace(/折價/g, '折')
-        .replace(/專用/g, '')
-        .replace(/試用包/g, '試用')
-        .replace(/精選/g, '')
-        .replace(/一組/g, '')
-        .replace(/下次消費可折抵/g, '')
-        .replace(/依現場供貨為準/g, '')
-        .replace(/門市領取/g, '')
-        .replace(/可用/g, '');
-
-      if (text.length > 7) {
-        text = text.slice(0, 7) + '…';
-      }
-
-      return text || '獎項';
-    }
-
-    function createArcTextPath(svg, defs, prizeName, index, wheelSize) {
+    function createArcTextPath(svg, defs, index, wheelSize) {
       const cx = wheelSize / 2;
       const cy = wheelSize / 2;
       const textRadius = 114;
@@ -1574,7 +1549,7 @@
       textPath.setAttributeNS("http://www.w3.org/1999/xlink", "href", `#${pathId}`);
       textPath.setAttribute("startOffset", "50%");
       textPath.setAttribute("text-anchor", "middle");
-      textPath.textContent = compressWheelPrizeText(prizeName);
+      textPath.textContent = `獎項${index + 1}`;
 
       text.appendChild(textPath);
       svg.appendChild(text);
@@ -1598,8 +1573,8 @@
       const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
       svg.appendChild(defs);
 
-      shown.forEach((prize, idx) => {
-        createArcTextPath(svg, defs, prize.prizeName || `獎項 ${idx + 1}`, idx, wheelSize);
+      shown.forEach((_, idx) => {
+        createArcTextPath(svg, defs, idx, wheelSize);
       });
 
       wheel.appendChild(svg);
