@@ -440,29 +440,160 @@
 
     .prize-list {
       display: grid;
-      gap: 10px;
+      gap: 12px;
       margin-top: 14px;
     }
 
     .prize-item {
-      background: #f8fcfc;
-      border: 1px solid #e7f0f0;
-      border-radius: 12px;
-      padding: 12px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fcfc 100%);
+      border: 1px solid #e2eeee;
+      border-radius: 18px;
+      padding: 14px;
       text-align: left;
+      box-shadow: 0 10px 24px rgba(14, 95, 92, 0.06);
+      isolation: isolate;
     }
 
-    .prize-item strong {
+    .prize-item::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 5px;
+      background: linear-gradient(90deg, #0e5f5c 0%, #17a2a0 35%, #f4b400 70%, #ff8f00 100%);
+      z-index: 0;
+    }
+
+    .prize-item::after {
+      content: "";
+      position: absolute;
+      right: -34px;
+      top: -34px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14,95,92,0.10) 0%, rgba(14,95,92,0.02) 55%, rgba(14,95,92,0) 72%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .prize-item-top,
+    .prize-main,
+    .prize-chip-row,
+    .prize-desc {
+      position: relative;
+      z-index: 1;
+    }
+
+    .prize-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .prize-no {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 84px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--brand-color), var(--brand-dark));
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      box-shadow: 0 6px 16px rgba(14,95,92,0.18);
+    }
+
+    .prize-stock-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .prize-stock-badge.unlimited {
+      background: #ecf8f7;
+      color: var(--brand-dark);
+      border-color: #d4ece9;
+    }
+
+    .prize-stock-badge.limited {
+      background: #fff5d8;
+      color: #8b5c00;
+      border-color: #f5df9a;
+    }
+
+    .prize-main {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .prize-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      background: linear-gradient(135deg, rgba(14,95,92,0.10), rgba(255,255,255,0.94));
+      border: 1px solid rgba(14,95,92,0.08);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55);
+      flex: 0 0 auto;
+    }
+
+    .prize-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .prize-title {
       display: block;
-      font-size: 14px;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--brand-dark);
+      line-height: 1.4;
+      letter-spacing: 0.01em;
     }
 
-    .prize-item span {
+    .prize-desc {
       display: block;
       font-size: 12px;
       color: var(--muted);
-      margin-top: 4px;
-      line-height: 1.5;
+      margin-top: 6px;
+      line-height: 1.7;
+    }
+
+    .prize-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .prize-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #e0ebeb;
+      color: var(--brand-dark);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
     }
 
     .coupon-section-title {
@@ -1580,17 +1711,79 @@
       wheel.appendChild(svg);
     }
 
+
+    function getPrizeVisualMeta(prize) {
+      const name = String((prize && prize.prizeName) || '');
+      const desc = String((prize && prize.prizeDesc) || '');
+      const source = `${name} ${desc}`;
+      const chips = ['🎯 會員抽獎'];
+
+      let icon = '🎁';
+
+      if (/折|優惠|折價|折抵|現折|95折|9折|100元|200元/i.test(source)) {
+        icon = '💸';
+        chips.push('折扣獎勵');
+      }
+
+      if (/門市|現場|領取|來店|兌換/i.test(source)) {
+        chips.push('門市兌換');
+      }
+
+      if (/試用|試吃|體驗/i.test(source)) {
+        icon = '🧪';
+        chips.push('體驗好禮');
+      }
+
+      if (/魚|孔雀魚/i.test(source)) {
+        icon = '🐟';
+        chips.push('品牌特色');
+      }
+
+      if (/飼料|用品|器材|周邊/i.test(source)) {
+        if (icon === '🎁') icon = '🛍️';
+        chips.push('實體商品');
+      }
+
+      if (/神秘|隨機|驚喜/i.test(source)) {
+        if (icon === '🎁') icon = '✨';
+        chips.push('驚喜獎項');
+      }
+
+      return {
+        icon,
+        chips: Array.from(new Set(chips)).slice(0, 3)
+      };
+    }
+
     function renderPrizeList() {
       const list = document.getElementById('prizeList');
       list.innerHTML = '';
 
       prizeData.forEach((prize, idx) => {
         const item = document.createElement('div');
+        const meta = getPrizeVisualMeta(prize);
+        const isUnlimited = prize.stock === '' || prize.stock === null || prize.stock === undefined;
+        const stockClass = isUnlimited ? 'unlimited' : 'limited';
+        const stockText = isUnlimited ? '不限庫存' : `剩餘 ${escapeHtml(prize.stock)} 份`;
+
         item.className = 'prize-item';
         item.innerHTML = `
-          <strong>獎項 ${idx + 1}｜${escapeHtml(prize.prizeName || '')}</strong>
-          <span>${escapeHtml(prize.prizeDesc || '')}</span>
-          <span>庫存：${prize.stock === '' || prize.stock === null || prize.stock === undefined ? '不限' : prize.stock}</span>
+          <div class="prize-item-top">
+            <span class="prize-no">獎項 ${idx + 1}</span>
+            <span class="prize-stock-badge ${stockClass}">${stockText}</span>
+          </div>
+
+          <div class="prize-main">
+            <div class="prize-icon">${meta.icon}</div>
+            <div class="prize-copy">
+              <strong class="prize-title">${escapeHtml(prize.prizeName || '')}</strong>
+              <span class="prize-desc">${escapeHtml(prize.prizeDesc || '本期活動獎項，實際兌換內容以門市公告為準。')}</span>
+            </div>
+          </div>
+
+          <div class="prize-chip-row">
+            ${meta.chips.map(chip => `<span class="prize-chip">${escapeHtml(chip)}</span>`).join('')}
+          </div>
         `;
         list.appendChild(item);
       });
