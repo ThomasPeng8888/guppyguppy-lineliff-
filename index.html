@@ -240,8 +240,8 @@
 
     .wheel-wrapper {
       position: relative;
-      width: 300px;
-      height: 300px;
+      width: 320px;
+      height: 320px;
       margin: 18px auto 12px;
     }
 
@@ -411,16 +411,22 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 112px;
-      transform-origin: 0 0;
-      text-align: right;
-      font-size: 12px;
-      font-weight: 800;
-      color: #fff;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      width: 82px;
+      min-height: 34px;
+      transform-origin: center center;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.28);
       z-index: 5;
-      line-height: 1.3;
+      line-height: 1.12;
       pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: normal;
+      word-break: break-all;
     }
 
     .spin-hint {
@@ -1492,17 +1498,29 @@
       });
     }
 
+    function formatWheelPrizeText(name) {
+      const text = String(name || '').trim();
+      if (!text) return '獎項';
+      if (text.length <= 4) return escapeHtml(text);
+      if (text.length <= 8) {
+        return `${escapeHtml(text.slice(0, 4))}<br>${escapeHtml(text.slice(4))}`;
+      }
+      return `${escapeHtml(text.slice(0, 4))}<br>${escapeHtml(text.slice(4, 8))}…`;
+    }
+
     function renderWheelLabels() {
       const wheel = document.getElementById('wheel');
       wheel.querySelectorAll('.wheel-label').forEach(el => el.remove());
 
       const shown = prizeData.slice(0, 6);
+
       shown.forEach((prize, idx) => {
         const angle = idx * 60 + 30;
         const label = document.createElement('div');
         label.className = 'wheel-label';
-        label.style.transform = `rotate(${angle}deg) translate(0, -116px) rotate(90deg)`;
-        label.textContent = prize.prizeName || `獎項 ${idx + 1}`;
+        label.style.transform =
+          `translate(-50%, -50%) rotate(${angle}deg) translate(0, -108px) rotate(90deg)`;
+        label.innerHTML = formatWheelPrizeText(prize.prizeName || `獎項 ${idx + 1}`);
         wheel.appendChild(label);
       });
     }
@@ -1748,7 +1766,7 @@
       const wrap = document.getElementById('wheelLights');
       wrap.innerHTML = '';
       const total = 24;
-      const radius = 146;
+      const radius = 156;
 
       for (let i = 0; i < total; i++) {
         const bulb = document.createElement('span');
