@@ -407,26 +407,28 @@
       box-shadow: 0 0 0 15px rgba(255, 215, 0, 0.2), 0 12px 34px rgba(0,0,0,0.2);
     }
 
-    .wheel-label {
+    .wheel-svg {
       position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 82px;
-      min-height: 34px;
-      transform-origin: center center;
-      text-align: center;
-      font-size: 10px;
-      font-weight: 900;
-      color: #ffffff;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.28);
-      z-index: 5;
-      line-height: 1.12;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      white-space: normal;
-      word-break: break-all;
+      z-index: 5;
+      overflow: visible;
+    }
+
+    .wheel-arc-path {
+      fill: none;
+    }
+
+    .wheel-arc-text {
+      fill: #ffffff;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      paint-order: stroke;
+      stroke: rgba(0, 0, 0, 0.18);
+      stroke-width: 2px;
     }
 
     .spin-hint {
@@ -1498,31 +1500,109 @@
       });
     }
 
-    function formatWheelPrizeText(name) {
-      const text = String(name || '').trim();
-      if (!text) return '獎項';
-      if (text.length <= 4) return escapeHtml(text);
-      if (text.length <= 8) {
-        return `${escapeHtml(text.slice(0, 4))}<br>${escapeHtml(text.slice(4))}`;
+    function polarToCartesian(cx, cy, r, angleDeg) {
+      const rad = (angleDeg - 90) * Math.PI / 180;
+      return {
+        x: cx + r * Math.cos(rad),
+        y: cy + r * Math.sin(rad)
+      };
+    }
+
+    function describeArc(cx, cy, r, startAngle, endAngle, sweepFlag) {
+      const start = polarToCartesian(cx, cy, r, startAngle);
+      const end = polarToCartesian(cx, cy, r, endAngle);
+      const largeArcFlag = Math.abs(endAngle - startAngle) <= 180 ? "0" : "1";
+      return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`;
+    }
+
+    function compressWheelPrizeText(name) {
+      let text = String(name || '').replace(/\s+/g, '').trim();
+
+      text = text
+        .replace(/會員限定/g, '')
+        .replace(/會員/g, '')
+        .replace(/限定/g, '')
+        .replace(/優惠券/g, '券')
+        .replace(/折價/g, '折')
+        .replace(/專用/g, '')
+        .replace(/試用包/g, '試用')
+        .replace(/精選/g, '')
+        .replace(/一組/g, '')
+        .replace(/下次消費可折抵/g, '')
+        .replace(/依現場供貨為準/g, '')
+        .replace(/門市領取/g, '')
+        .replace(/可用/g, '');
+
+      if (text.length > 7) {
+        text = text.slice(0, 7) + '…';
       }
-      return `${escapeHtml(text.slice(0, 4))}<br>${escapeHtml(text.slice(4, 8))}…`;
+
+      return text || '獎項';
+    }
+
+    function createArcTextPath(svg, defs, prizeName, index, wheelSize) {
+      const cx = wheelSize / 2;
+      const cy = wheelSize / 2;
+      const textRadius = 114;
+      const centerAngle = index * 60 + 30;
+      const arcSpan = 34;
+
+      const pathId = `wheelArcPath_${index}_${Date.now()}`;
+
+      let startAngle, endAngle, sweepFlag;
+
+      if (centerAngle > 90 && centerAngle < 270) {
+        startAngle = centerAngle + arcSpan / 2;
+        endAngle = centerAngle - arcSpan / 2;
+        sweepFlag = 0;
+      } else {
+        startAngle = centerAngle - arcSpan / 2;
+        endAngle = centerAngle + arcSpan / 2;
+        sweepFlag = 1;
+      }
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("id", pathId);
+      path.setAttribute("d", describeArc(cx, cy, textRadius, startAngle, endAngle, sweepFlag));
+      path.setAttribute("class", "wheel-arc-path");
+      defs.appendChild(path);
+
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("class", "wheel-arc-text");
+
+      const textPath = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
+      textPath.setAttributeNS("http://www.w3.org/1999/xlink", "href", `#${pathId}`);
+      textPath.setAttribute("startOffset", "50%");
+      textPath.setAttribute("text-anchor", "middle");
+      textPath.textContent = compressWheelPrizeText(prizeName);
+
+      text.appendChild(textPath);
+      svg.appendChild(text);
     }
 
     function renderWheelLabels() {
       const wheel = document.getElementById('wheel');
+
       wheel.querySelectorAll('.wheel-label').forEach(el => el.remove());
+      wheel.querySelectorAll('.wheel-svg').forEach(el => el.remove());
 
       const shown = prizeData.slice(0, 6);
+      if (!shown.length) return;
+
+      const wheelSize = 320;
+
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", `0 0 ${wheelSize} ${wheelSize}`);
+      svg.setAttribute("class", "wheel-svg");
+
+      const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+      svg.appendChild(defs);
 
       shown.forEach((prize, idx) => {
-        const angle = idx * 60 + 30;
-        const label = document.createElement('div');
-        label.className = 'wheel-label';
-        label.style.transform =
-          `translate(-50%, -50%) rotate(${angle}deg) translate(0, -108px) rotate(90deg)`;
-        label.innerHTML = formatWheelPrizeText(prize.prizeName || `獎項 ${idx + 1}`);
-        wheel.appendChild(label);
+        createArcTextPath(svg, defs, prize.prizeName || `獎項 ${idx + 1}`, idx, wheelSize);
       });
+
+      wheel.appendChild(svg);
     }
 
     function renderPrizeList() {
