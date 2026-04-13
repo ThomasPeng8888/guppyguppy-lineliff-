@@ -1318,6 +1318,207 @@
       line-height: 1.6;
     }
 
+    .admin-filter-bar {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .admin-filter-bar input,
+    .admin-filter-bar select {
+      width: 100%;
+      border: 1px solid #d6e4e4;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .dashboard-detail-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .dashboard-panel {
+      background: #f9fcfc;
+      border: 1px solid #e2eeee;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .dashboard-panel-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--brand-dark);
+      margin-bottom: 8px;
+    }
+
+    .admin-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .admin-mini-box {
+      background: #fff;
+      border: 1px solid #e7f0f0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .admin-mini-box strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--brand-dark);
+      font-size: 16px;
+    }
+
+    .chart-stack {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: 76px 1fr 42px;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .chart-bar {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: #eaf3f3;
+      overflow: hidden;
+    }
+
+    .chart-bar > span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0e5f5c, #4fc3f7);
+    }
+
+    .dashboard-table-wrap {
+      overflow-x: auto;
+      margin-top: 10px;
+      border: 1px solid #e7f0f0;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .dashboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      font-size: 12px;
+    }
+
+    .dashboard-table th,
+    .dashboard-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #edf3f3;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .dashboard-table th {
+      background: #f6fbfb;
+      color: var(--brand-dark);
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .dashboard-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef8f8;
+      color: var(--brand-dark);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .table-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .mini-btn {
+      border: none;
+      border-radius: 9px;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      background: #e8f7f6;
+      color: var(--brand-dark);
+      white-space: nowrap;
+    }
+
+    .mini-btn.primary {
+      background: var(--brand-color);
+      color: #fff;
+    }
+
+    .mini-btn.warn {
+      background: #fff3cd;
+      color: #8a5a00;
+    }
+
+    .mini-btn.danger {
+      background: #ffe4e1;
+      color: #a62828;
+    }
+
+    .dashboard-empty {
+      padding: 14px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      background: #fbfefe;
+    }
+
+    .selected-campaign-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .selected-campaign-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--brand-dark);
+      line-height: 1.35;
+    }
+
+    .selected-campaign-sub {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
     .footer-text {
       text-align: center;
       color: var(--muted);
@@ -1589,6 +1790,19 @@
               <button id="adminRefreshBtn" class="btn btn-primary" type="button">重新整理</button>
               <button id="adminCreateNewBtn" class="btn btn-accent" type="button">新增活動</button>
             </div>
+
+            <div class="admin-filter-bar">
+              <input id="adminCampaignSearchInput" type="text" placeholder="搜尋活動名稱、活動編號、獎品名稱">
+              <select id="adminCampaignStatusFilter">
+                <option value="all">全部狀態</option>
+                <option value="registration_open">登記中</option>
+                <option value="upcoming">即將開始</option>
+                <option value="awaiting_draw">等待抽獎</option>
+                <option value="drawn">已抽獎</option>
+                <option value="hidden">未發布</option>
+                <option value="cancelled">已取消</option>
+              </select>
+            </div>
           </div>
 
           <div class="card">
@@ -1617,8 +1831,13 @@
             </div>
 
             <div class="field">
-              <label for="adminWinnerCount">名額數量</label>
+              <label for="adminWinnerCount">正取名額</label>
               <input id="adminWinnerCount" type="number" min="1" step="1" value="1">
+            </div>
+
+            <div class="field">
+              <label for="adminAlternateCount">候補名額</label>
+              <input id="adminAlternateCount" type="number" min="0" step="1" value="0">
             </div>
 
             <div class="field">
@@ -1677,10 +1896,49 @@
 
           <div class="card">
             <div class="section-label" style="color:#6d8382; text-align:center;">現有活動列表</div>
-            <div class="help-text">編輯活動後可立即上架／下架，也可以在截止後按下立即抽獎。</div>
+            <div class="help-text">支援活動搜尋 / 篩選、名單檢視、活動複製、立即抽獎與候補遞補。</div>
 
             <div id="campaignAdminList" class="campaign-admin-list">
               <div class="campaign-empty">活動後台資料載入中...</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-label" style="color:#6d8382; text-align:center;">活動儀表板</div>
+            <div class="help-text">點選活動卡片上的「名單 / 儀表板」即可查看已登記名單、中獎名單、核銷狀態與匯出資料。</div>
+
+            <div id="campaignDashboardEmpty" class="dashboard-empty">請先從上方活動列表選擇一個活動。</div>
+
+            <div id="campaignDashboardDetail" class="hidden">
+              <div class="dashboard-panel">
+                <div class="selected-campaign-head">
+                  <div>
+                    <div id="selectedCampaignTitle" class="selected-campaign-title">—</div>
+                    <div id="selectedCampaignSub" class="selected-campaign-sub">—</div>
+                  </div>
+                  <div class="table-actions">
+                    <button id="adminExportWinnersBtn" class="mini-btn primary" type="button">匯出中獎 CSV</button>
+                    <button id="adminCloneSelectedBtn" class="mini-btn" type="button">複製活動</button>
+                    <button id="adminRefreshSelectedBtn" class="mini-btn" type="button">刷新名單</button>
+                    <button id="adminPromoteAlternateBtn" class="mini-btn warn" type="button">遞補候補</button>
+                  </div>
+                </div>
+
+                <div id="selectedCampaignStatGrid" class="admin-mini-grid"></div>
+                <div id="selectedCampaignChart" class="chart-stack"></div>
+              </div>
+
+              <div class="dashboard-detail-grid">
+                <div class="dashboard-panel">
+                  <div class="dashboard-panel-title">已登記名單</div>
+                  <div id="campaignRegistrantTableWrap"></div>
+                </div>
+
+                <div class="dashboard-panel">
+                  <div class="dashboard-panel-title">中獎 / 候補名單</div>
+                  <div id="campaignWinnerTableWrap"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1714,6 +1972,8 @@
     let campaignLoaded = false;
     let campaignCenterData = { openCampaigns: [], upcomingCampaigns: [], closedCampaigns: [], winnerRecords: [], activeCampaignCount: 0 };
     let campaignAdminDashboard = { summary: {}, campaigns: [] };
+    let campaignAdminDetail = null;
+    let selectedAdminCampaignId = '';
 
     async function init() {
       try {
@@ -3398,6 +3658,14 @@
       document.getElementById('adminCreateNewBtn').onclick = () => setDefaultCampaignAdminForm(true);
       document.getElementById('adminClearFormBtn').onclick = () => setDefaultCampaignAdminForm(true);
       document.getElementById('adminSaveCampaignBtn').onclick = saveCampaignAdminForm;
+      document.getElementById('adminCampaignSearchInput').addEventListener('input', applyCampaignAdminFilters);
+      document.getElementById('adminCampaignStatusFilter').addEventListener('change', applyCampaignAdminFilters);
+      document.getElementById('adminExportWinnersBtn').onclick = exportSelectedCampaignWinnersCsv;
+      document.getElementById('adminCloneSelectedBtn').onclick = () => cloneCampaignById(selectedAdminCampaignId);
+      document.getElementById('adminRefreshSelectedBtn').onclick = () => {
+        if (selectedAdminCampaignId) loadCampaignAdminDetail(selectedAdminCampaignId, true);
+      };
+      document.getElementById('adminPromoteAlternateBtn').onclick = () => promoteAlternateForCampaign(selectedAdminCampaignId, '');
     }
 
     function formatDateTimeLocalInput(date) {
@@ -3420,6 +3688,7 @@
       document.getElementById('adminPrizeName').value = '';
       document.getElementById('adminPrizeDesc').value = '';
       document.getElementById('adminWinnerCount').value = 1;
+      document.getElementById('adminAlternateCount').value = 0;
       document.getElementById('adminRegisterStartAt').value = formatDateTimeLocalInput(start);
       document.getElementById('adminRegisterEndAt').value = formatDateTimeLocalInput(end);
       document.getElementById('adminDrawAt').value = formatDateTimeLocalInput(draw);
@@ -3439,6 +3708,7 @@
       document.getElementById('adminPrizeName').value = item.prizeName || '';
       document.getElementById('adminPrizeDesc').value = item.prizeDesc || '';
       document.getElementById('adminWinnerCount').value = item.winnerCount || 1;
+      document.getElementById('adminAlternateCount').value = item.alternateCount || 0;
       document.getElementById('adminRegisterStartAt').value = item.registerStartAtIso || '';
       document.getElementById('adminRegisterEndAt').value = item.registerEndAtIso || '';
       document.getElementById('adminDrawAt').value = item.drawAtIso || item.registerEndAtIso || '';
@@ -3460,6 +3730,7 @@
         prizeName: document.getElementById('adminPrizeName').value.trim(),
         prizeDesc: document.getElementById('adminPrizeDesc').value.trim(),
         winnerCount: Number(document.getElementById('adminWinnerCount').value || 1),
+        alternateCount: Number(document.getElementById('adminAlternateCount').value || 0),
         registerStartAt: document.getElementById('adminRegisterStartAt').value,
         registerEndAt: document.getElementById('adminRegisterEndAt').value,
         drawAt: document.getElementById('adminDrawAt').value,
@@ -3492,6 +3763,25 @@
       document.getElementById('adminPendingRedeemDisplay').innerText = summary.pendingRedeemCount || 0;
     }
 
+    function applyCampaignAdminFilters() {
+      const keyword = (document.getElementById('adminCampaignSearchInput').value || '').trim().toLowerCase();
+      const statusFilter = document.getElementById('adminCampaignStatusFilter').value || 'all';
+      let items = [...(campaignAdminDashboard.campaigns || [])];
+
+      if (keyword) {
+        items = items.filter(item => {
+          const text = `${item.campaignId || ''} ${item.campaignName || ''} ${item.prizeName || ''}`.toLowerCase();
+          return text.includes(keyword);
+        });
+      }
+
+      if (statusFilter !== 'all') {
+        items = items.filter(item => item.effectiveStatus === statusFilter);
+      }
+
+      renderCampaignAdminList(items);
+    }
+
     function buildCampaignAdminCard(item) {
       const wrap = document.createElement('div');
       wrap.className = 'campaign-admin-card';
@@ -3512,7 +3802,8 @@
 
         <div class="campaign-chip-row">
           <span class="campaign-chip">🎁 ${escapeHtml(item.prizeName || '')}</span>
-          <span class="campaign-chip">👥 ${item.winnerCount || 1} 名</span>
+          <span class="campaign-chip">🏆 正取 ${item.winnerCount || 1}</span>
+          <span class="campaign-chip">🪂 候補 ${item.alternateCount || 0}</span>
           <span class="campaign-chip">${item.autoDraw ? '⏰ 自動抽獎' : '🖐 手動抽獎'}</span>
           <span class="campaign-chip">${publishText}</span>
         </div>
@@ -3531,15 +3822,23 @@
         </div>
 
         <div class="campaign-admin-actions">
-          <button class="admin-action-btn primary" data-admin-edit="${escapeHtml(item.campaignId || '')}">編輯</button>
+          <button class="admin-action-btn primary" data-admin-detail="${escapeHtml(item.campaignId || '')}">名單 / 儀表板</button>
+          <button class="admin-action-btn" data-admin-edit="${escapeHtml(item.campaignId || '')}">編輯</button>
+          <button class="admin-action-btn" data-admin-clone="${escapeHtml(item.campaignId || '')}">複製</button>
           <button class="admin-action-btn" data-admin-publish="${escapeHtml(item.campaignId || '')}">${item.publishFlag ? '下架' : '發布'}</button>
           <button class="admin-action-btn warn" ${closeBtnDisabled ? 'disabled' : ''} data-admin-close="${escapeHtml(item.campaignId || '')}">立即截止</button>
           <button class="admin-action-btn danger" ${drawBtnDisabled ? 'disabled' : ''} data-admin-draw="${escapeHtml(item.campaignId || '')}">立即抽獎</button>
         </div>
       `;
 
+      const detailBtn = wrap.querySelector('[data-admin-detail]');
+      if (detailBtn) detailBtn.onclick = () => loadCampaignAdminDetail(item.campaignId, true);
+
       const editBtn = wrap.querySelector('[data-admin-edit]');
       if (editBtn) editBtn.onclick = () => fillCampaignAdminForm(item);
+
+      const cloneBtn = wrap.querySelector('[data-admin-clone]');
+      if (cloneBtn) cloneBtn.onclick = () => cloneCampaignById(item.campaignId);
 
       const publishBtn = wrap.querySelector('[data-admin-publish]');
       if (publishBtn) publishBtn.onclick = () => toggleCampaignPublish(item);
@@ -3557,10 +3856,196 @@
       const list = document.getElementById('campaignAdminList');
       list.innerHTML = '';
       if (!items || !items.length) {
-        list.innerHTML = '<div class="campaign-empty">目前尚未建立任何活動</div>';
+        list.innerHTML = '<div class="campaign-empty">目前找不到符合條件的活動</div>';
         return;
       }
       items.forEach(item => list.appendChild(buildCampaignAdminCard(item)));
+    }
+
+    function renderSelectedCampaignStats(stats = {}) {
+      const grid = document.getElementById('selectedCampaignStatGrid');
+      const cells = [
+        ['登記人數', stats.registrantCount || 0],
+        ['總得獎紀錄', stats.winnerCount || 0],
+        ['正取', stats.primaryWinnerCount || 0],
+        ['候補', stats.alternateCount || 0],
+        ['已遞補', stats.promotedCount || 0],
+        ['待核銷', stats.pendingRedeemCount || 0],
+        ['已核銷', stats.redeemedCount || 0],
+        ['已過期 / 作廢', (stats.expiredCount || 0) + (stats.voidCount || 0)]
+      ];
+      grid.innerHTML = cells.map(([label, value]) => `
+        <div class="admin-mini-box">${escapeHtml(label)}<strong>${value}</strong></div>
+      `).join('');
+    }
+
+    function renderSelectedCampaignChart(stats = {}) {
+      const chart = document.getElementById('selectedCampaignChart');
+      const rows = [
+        ['待核銷', stats.pendingRedeemCount || 0],
+        ['已核銷', stats.redeemedCount || 0],
+        ['已過期', stats.expiredCount || 0],
+        ['候補中', stats.standbyCount || 0],
+        ['已作廢', stats.voidCount || 0]
+      ];
+      const max = Math.max(1, ...rows.map(row => row[1]));
+      chart.innerHTML = rows.map(([label, value]) => `
+        <div class="chart-row">
+          <div>${escapeHtml(label)}</div>
+          <div class="chart-bar"><span style="width:${Math.max(6, Math.round((value / max) * 100))}%"></span></div>
+          <div style="text-align:right;">${value}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderRegistrantTable(rows = []) {
+      if (!rows.length) {
+        return '<div class="dashboard-empty">目前沒有登記名單</div>';
+      }
+
+      return `
+        <div class="dashboard-table-wrap">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>會員</th>
+                <th>登記時間</th>
+                <th>會員等級</th>
+                <th>累積消費</th>
+                <th>目前點數</th>
+                <th>抽獎資格 / 結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  <td>
+                    <strong>${escapeHtml(row.memberName || '')}</strong><br>
+                    <span style="color:#6d8382;">${escapeHtml(row.memberId || '')}</span>
+                  </td>
+                  <td>${escapeHtml(row.registerTime || '')}</td>
+                  <td>${escapeHtml(row.memberTier || '—')}</td>
+                  <td>${Number(row.totalSpend || 0).toLocaleString()}</td>
+                  <td>${Number(row.currentPoints || 0).toLocaleString()}</td>
+                  <td>
+                    <span class="table-badge">${escapeHtml(row.registerStatusText || '')}</span>
+                    ${row.winnerId ? `<div style="margin-top:6px; color:#6d8382;">${escapeHtml(row.winnerTypeText || '')}｜${escapeHtml(row.winnerStatusText || '')}</div>` : ''}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderWinnerTable(rows = []) {
+      if (!rows.length) {
+        return '<div class="dashboard-empty">活動尚未產生中獎或候補名單</div>';
+      }
+
+      return `
+        <div class="dashboard-table-wrap">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>身分</th>
+                <th>會員</th>
+                <th>狀態</th>
+                <th>抽出 / 遞補時間</th>
+                <th>兌換資訊</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  <td>
+                    <span class="table-badge">${escapeHtml(row.winnerTypeText || '')}</span>
+                    <div style="margin-top:6px; color:#6d8382;">順位 ${row.winnerRank || 0}</div>
+                  </td>
+                  <td>
+                    <strong>${escapeHtml(row.memberName || '')}</strong><br>
+                    <span style="color:#6d8382;">${escapeHtml(row.memberId || '')}</span>
+                  </td>
+                  <td>
+                    <span class="table-badge">${escapeHtml(row.winnerStatusText || '')}</span>
+                    ${row.promotedAt ? `<div style="margin-top:6px; color:#6d8382;">遞補：${escapeHtml(row.promotedAt)}</div>` : ''}
+                    ${row.redeemedAt ? `<div style="margin-top:6px; color:#6d8382;">核銷：${escapeHtml(row.redeemedAt)}</div>` : ''}
+                  </td>
+                  <td>${escapeHtml(row.drawTime || '')}</td>
+                  <td>
+                    <div>${escapeHtml(row.redeemCode || '—')}</div>
+                    <div style="margin-top:6px; color:#6d8382;">到期：${escapeHtml(row.expireAt || '不限')}</div>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      ${row.winnerType === 'ALTERNATE' && row.winnerStatus === 'STANDBY' ? `<button class="mini-btn warn" data-promote-alt="${escapeHtml(row.winnerId || '')}">遞補此候補</button>` : ''}
+                      ${(row.winnerType === 'PRIMARY' || row.winnerType === 'PROMOTED') && row.winnerStatus === 'UNREDEEMED' ? `<button class="mini-btn danger" data-void-promote="${escapeHtml(row.winnerId || '')}">作廢並遞補</button>` : ''}
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function bindWinnerTableActions() {
+      document.querySelectorAll('[data-promote-alt]').forEach(btn => {
+        const altWinnerId = btn.getAttribute('data-promote-alt') || '';
+        btn.onclick = () => promoteAlternateForCampaign(selectedAdminCampaignId, '', altWinnerId);
+      });
+
+      document.querySelectorAll('[data-void-promote]').forEach(btn => {
+        const winnerId = btn.getAttribute('data-void-promote') || '';
+        btn.onclick = () => promoteAlternateForCampaign(selectedAdminCampaignId, winnerId);
+      });
+    }
+
+    function renderCampaignDashboardDetail(data) {
+      campaignAdminDetail = data;
+      selectedAdminCampaignId = data && data.campaign ? data.campaign.campaignId : '';
+      const empty = document.getElementById('campaignDashboardEmpty');
+      const detail = document.getElementById('campaignDashboardDetail');
+
+      if (!data || !data.ok || !data.campaign) {
+        empty.classList.remove('hidden');
+        detail.classList.add('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      detail.classList.remove('hidden');
+
+      document.getElementById('selectedCampaignTitle').innerText = data.campaign.campaignName || '未命名活動';
+      document.getElementById('selectedCampaignSub').innerHTML =
+        `活動編號：${escapeHtml(data.campaign.campaignId || '')}<br>` +
+        `登記：${escapeHtml(data.campaign.registerStartAt || '未設定')} ～ ${escapeHtml(data.campaign.registerEndAt || '未設定')}<br>` +
+        `抽獎：${escapeHtml(data.campaign.drawAt || '未設定')}｜狀態：${escapeHtml(data.campaign.effectiveStatusText || '')}`;
+
+      renderSelectedCampaignStats(data.stats || {});
+      renderSelectedCampaignChart(data.stats || {});
+      document.getElementById('campaignRegistrantTableWrap').innerHTML = renderRegistrantTable(data.registrants || []);
+      document.getElementById('campaignWinnerTableWrap').innerHTML = renderWinnerTable(data.winners || []);
+      bindWinnerTableActions();
+    }
+
+    async function loadCampaignAdminDetail(campaignId, force = false) {
+      if (!campaignId) return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=campaign_admin_detail&campaignId=${encodeURIComponent(campaignId)}&staffId=${encodeURIComponent(currentProfile.userId)}&staffName=${encodeURIComponent(currentProfile.displayName)}&t=${force ? Date.now() : ''}`);
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.message || '載入活動儀表板失敗');
+          return;
+        }
+        renderCampaignDashboardDetail(data);
+      } catch (err) {
+        console.error(err);
+        alert('載入活動儀表板失敗');
+      }
     }
 
     async function loadCampaignAdminDashboard(force = false) {
@@ -3575,10 +4060,115 @@
         }
         campaignAdminDashboard = data;
         renderCampaignAdminSummary(data.summary || {});
-        renderCampaignAdminList(data.campaigns || []);
+        applyCampaignAdminFilters();
+
+        const availableIds = new Set((data.campaigns || []).map(item => item.campaignId));
+        if (selectedAdminCampaignId && availableIds.has(selectedAdminCampaignId)) {
+          await loadCampaignAdminDetail(selectedAdminCampaignId, force);
+        } else if ((data.campaigns || []).length) {
+          await loadCampaignAdminDetail(data.campaigns[0].campaignId, force);
+        } else {
+          renderCampaignDashboardDetail(null);
+        }
       } catch (err) {
         console.error(err);
         alert('載入活動管理後台失敗');
+      }
+    }
+
+    async function cloneCampaignById(campaignId) {
+      if (!campaignId) return;
+      const yes = confirm('確認要複製這個活動嗎？系統會建立一筆新的草稿活動。');
+      if (!yes) return;
+      try {
+        const result = await postAdminAction('campaign_admin_clone', {
+          sourceCampaignId: campaignId
+        });
+        if (!result.ok) {
+          alert(result.message || '複製活動失敗');
+          return;
+        }
+        alert(result.message || '活動已複製');
+        await loadCampaignAdminDashboard(true);
+      } catch (err) {
+        console.error(err);
+        alert('複製活動失敗');
+      }
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? '');
+      if (/[",\n]/.test(text)) {
+        return `"${text.replace(/"/g, '""')}"`;
+      }
+      return text;
+    }
+
+    function exportSelectedCampaignWinnersCsv() {
+      if (!campaignAdminDetail || !campaignAdminDetail.campaign) {
+        alert('請先選擇一個活動');
+        return;
+      }
+
+      const rows = campaignAdminDetail.winners || [];
+      if (!rows.length) {
+        alert('目前沒有可匯出的中獎資料');
+        return;
+      }
+
+      const headers = ['活動編號', '活動名稱', '會員ID', '會員名稱', '身分', '順位', '狀態', '抽出時間', '遞補時間', '兌換碼', '核銷時間', '核銷人員', '到期時間'];
+      const lines = [headers.map(csvEscape).join(',')];
+      rows.forEach(row => {
+        lines.push([
+          campaignAdminDetail.campaign.campaignId,
+          campaignAdminDetail.campaign.campaignName,
+          row.memberId,
+          row.memberName,
+          row.winnerTypeText,
+          row.winnerRank,
+          row.winnerStatusText,
+          row.drawTime,
+          row.promotedAt,
+          row.redeemCode,
+          row.redeemedAt,
+          row.redeemedByName,
+          row.expireAt
+        ].map(csvEscape).join(','));
+      });
+
+      const blob = new Blob(["\ufeff" + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${campaignAdminDetail.campaign.campaignId || 'campaign'}_winners.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function promoteAlternateForCampaign(campaignId, replaceWinnerId = '', alternateWinnerId = '') {
+      if (!campaignId) {
+        alert('請先選擇活動');
+        return;
+      }
+      const msg = replaceWinnerId ? '確認要將這位未核銷得獎者作廢，並遞補下一位候補嗎？' : '確認要遞補下一位候補成為得獎者嗎？';
+      if (!confirm(msg)) return;
+      try {
+        const result = await postAdminAction('campaign_admin_promote_alternate', {
+          campaignId,
+          replaceWinnerId,
+          alternateWinnerId
+        });
+        if (!result.ok) {
+          alert(result.message || '候補遞補失敗');
+          return;
+        }
+        alert(result.message || '已完成候補遞補');
+        await loadCampaignAdminDashboard(true);
+      } catch (err) {
+        console.error(err);
+        alert('候補遞補失敗');
       }
     }
 
@@ -3605,7 +4195,10 @@
         alert(result.message || '活動已儲存');
         await loadCampaignAdminDashboard(true);
         const saved = (campaignAdminDashboard.campaigns || []).find(item => item.campaignId === result.campaignId);
-        if (saved) fillCampaignAdminForm(saved);
+        if (saved) {
+          fillCampaignAdminForm(saved);
+          await loadCampaignAdminDetail(saved.campaignId, true);
+        }
       } catch (err) {
         console.error(err);
         alert('儲存活動失敗');
@@ -3664,7 +4257,7 @@
           alert(result.message || '抽獎失敗');
           return;
         }
-        alert(`${result.message || '活動抽獎完成'}\n登記人數：${result.registrantCount || 0}\n中獎人數：${result.winnerCount || 0}`);
+        alert(`${result.message || '活動抽獎完成'}\n登記人數：${result.registrantCount || 0}\n正取人數：${result.winnerCount || 0}\n候補人數：${result.alternateCount || 0}`);
         await loadCampaignAdminDashboard(true);
       } catch (err) {
         console.error(err);
