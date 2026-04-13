@@ -2027,6 +2027,27 @@
     let campaignAdminDashboard = { summary: {}, campaigns: [] };
     let campaignAdminDetail = null;
     let selectedAdminCampaignId = '';
+    let couponDetailMemoryCache = {};
+    let campaignWinnerDetailMemoryCache = {};
+    let campaignAdminDetailMemoryCache = {};
+
+    function buildApiUrl(action, params = {}, force = false) {
+      const url = new URL(SCRIPT_URL);
+      url.searchParams.set('action', action);
+      Object.keys(params || {}).forEach(key => {
+        const value = params[key];
+        if (value !== undefined && value !== null && value !== '') {
+          url.searchParams.set(key, value);
+        }
+      });
+      if (force) url.searchParams.set('t', Date.now());
+      return url.toString();
+    }
+
+    async function fetchJson(action, params = {}, force = false) {
+      const res = await fetch(buildApiUrl(action, params, force));
+      return await res.json();
+    }
 
     async function init() {
       try {
@@ -2195,8 +2216,7 @@
       document.getElementById('prizeList').innerHTML = '<div class="coupon-empty">獎項載入中...</div>';
 
       prizeLoadingPromise = (async () => {
-        const res = await fetch(`${SCRIPT_URL}?action=lottery_prizes&t=${Date.now()}`);
-        prizeData = await res.json();
+        prizeData = await fetchJson('lottery_prizes', {}, force);
         prizesLoaded = true;
         renderWheelLabels();
         renderPrizeList();
@@ -2223,8 +2243,9 @@
       document.getElementById('expiredList').innerHTML = '<div class="coupon-empty">獎品載入中...</div>';
 
       couponLoadingPromise = (async () => {
-        const res = await fetch(`${SCRIPT_URL}?action=member_coupons&uid=${encodeURIComponent(currentProfile.userId)}&t=${Date.now()}`);
-        couponData = await res.json();
+        couponData = await fetchJson('member_coupons', {
+          uid: currentProfile.userId
+        }, force);
 
         if (!couponData.ok) {
           alert(couponData.message || '載入獎品失敗');
@@ -2290,8 +2311,10 @@
       document.getElementById('campaignWinnerList').innerHTML = '<div class="coupon-empty">活動紀錄載入中...</div>';
 
       campaignLoadingPromise = (async () => {
-        const res = await fetch(`${SCRIPT_URL}?action=member_campaign_center&uid=${encodeURIComponent(currentProfile.userId)}&name=${encodeURIComponent(currentProfile.displayName)}&t=${Date.now()}`);
-        campaignCenterData = await res.json();
+        campaignCenterData = await fetchJson('member_campaign_center', {
+          uid: currentProfile.userId,
+          name: currentProfile.displayName
+        }, force);
 
         if (!campaignCenterData.ok) {
           alert(campaignCenterData.message || '載入活動失敗');
@@ -2541,10 +2564,12 @@
       }
 
       try {
-        const res = await fetch(
-          `${SCRIPT_URL}?action=campaign_winner_detail&winnerId=${encodeURIComponent(item.winnerId)}&code=${encodeURIComponent(item.redeemCode || '')}&t=${Date.now()}`
-        );
-        const detail = await res.json();
+        const cacheKey = `${item.winnerId || ''}__${item.redeemCode || ''}`;
+        const detail = campaignWinnerDetailMemoryCache[cacheKey] || await fetchJson('campaign_winner_detail', {
+          winnerId: item.winnerId,
+          code: item.redeemCode || ''
+        });
+        if (detail && detail.ok) campaignWinnerDetailMemoryCache[cacheKey] = detail;
 
         if (!detail.ok) {
           alert(detail.message || '無法讀取這份活動獎品');
@@ -2581,10 +2606,12 @@
       }
 
       try {
-        const res = await fetch(
-          `${SCRIPT_URL}?action=campaign_winner_detail&winnerId=${encodeURIComponent(winnerId)}&code=${encodeURIComponent(code)}&t=${Date.now()}`
-        );
-        const detail = await res.json();
+        const cacheKey = `${winnerId || ''}__${code || ''}`;
+        const detail = campaignWinnerDetailMemoryCache[cacheKey] || await fetchJson('campaign_winner_detail', {
+          winnerId: winnerId,
+          code: code
+        });
+        if (detail && detail.ok) campaignWinnerDetailMemoryCache[cacheKey] = detail;
 
         if (!detail.ok) {
           alert(detail.message || '找不到這份活動獎品');
@@ -2760,10 +2787,12 @@
       }
 
       try {
-        const res = await fetch(
-          `${SCRIPT_URL}?action=coupon_detail&spinId=${encodeURIComponent(spinId)}&code=${encodeURIComponent(code)}&t=${Date.now()}`
-        );
-        const detail = await res.json();
+        const cacheKey = `${spinId || ''}__${code || ''}`;
+        const detail = couponDetailMemoryCache[cacheKey] || await fetchJson('coupon_detail', {
+          spinId: spinId,
+          code: code
+        });
+        if (detail && detail.ok) couponDetailMemoryCache[cacheKey] = detail;
 
         if (!detail.ok) {
           alert(detail.message || '找不到這張券');
@@ -2855,9 +2884,11 @@
       }
     }
 
-    async function loadMemberProfile() {
-      const res = await fetch(`${SCRIPT_URL}?action=member_home_summary&uid=${encodeURIComponent(currentProfile.userId)}&name=${encodeURIComponent(currentProfile.displayName)}&t=${Date.now()}`);
-      memberData = await res.json();
+    async function loadMemberProfile(force = false) {
+      memberData = await fetchJson('member_home_summary', {
+        uid: currentProfile.userId,
+        name: currentProfile.displayName
+      }, force);
       return memberData;
     }
 
@@ -3259,10 +3290,12 @@
       }
 
       try {
-        const res = await fetch(
-          `${SCRIPT_URL}?action=coupon_detail&spinId=${encodeURIComponent(coupon.spinId)}&code=${encodeURIComponent(coupon.redeemCode || '')}&t=${Date.now()}`
-        );
-        const detail = await res.json();
+        const cacheKey = `${coupon.spinId || ''}__${coupon.redeemCode || ''}`;
+        const detail = couponDetailMemoryCache[cacheKey] || await fetchJson('coupon_detail', {
+          spinId: coupon.spinId,
+          code: coupon.redeemCode || ''
+        });
+        if (detail && detail.ok) couponDetailMemoryCache[cacheKey] = detail;
 
         if (!detail.ok) {
           alert(detail.message || '無法讀取這張券');
@@ -3632,7 +3665,7 @@
           `此獎品已放入「我的獎品」，可隨時出示兌換碼核銷。`;
 
         await sleep(700);
-        await triggerNotify(result.spinId);
+        triggerNotify(result.spinId);
 
         memberData = memberData || {};
         memberData.currentPoints = result.currentPoints;
@@ -3640,6 +3673,12 @@
         renderMemberProfile();
 
         couponLoaded = false;
+
+        setTimeout(() => {
+          loadMemberProfile(true)
+            .then(() => renderMemberProfile())
+            .catch(err => console.error('background summary refresh failed', err));
+        }, 1200);
 
         await sleep(1000);
         resetWheelCenter();
@@ -4251,12 +4290,23 @@
     async function loadCampaignAdminDetail(campaignId, force = false) {
       if (!campaignId) return;
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=campaign_admin_detail&campaignId=${encodeURIComponent(campaignId)}&staffId=${encodeURIComponent(currentProfile.userId)}&staffName=${encodeURIComponent(currentProfile.displayName)}&t=${force ? Date.now() : ''}`);
-        const data = await res.json();
+        if (!force && campaignAdminDetailMemoryCache[campaignId]) {
+          renderCampaignDashboardDetail(campaignAdminDetailMemoryCache[campaignId]);
+          return;
+        }
+
+        const data = await fetchJson('campaign_admin_detail', {
+          campaignId: campaignId,
+          staffId: currentProfile.userId,
+          staffName: currentProfile.displayName
+        }, force);
+
         if (!data.ok) {
           alert(data.message || '載入活動儀表板失敗');
           return;
         }
+
+        campaignAdminDetailMemoryCache[campaignId] = data;
         renderCampaignDashboardDetail(data);
       } catch (err) {
         console.error(err);
@@ -4267,23 +4317,32 @@
     async function loadCampaignAdminDashboard(force = false) {
       document.getElementById('campaignAdminList').innerHTML = '<div class="campaign-empty">主控台資料載入中...</div>';
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=campaign_admin_dashboard&staffId=${encodeURIComponent(currentProfile.userId)}&staffName=${encodeURIComponent(currentProfile.displayName)}&t=${force ? Date.now() : ''}`);
-        const data = await res.json();
+        const data = await fetchJson('campaign_admin_bootstrap', {
+          staffId: currentProfile.userId,
+          staffName: currentProfile.displayName
+        }, force);
+
         if (!data.ok) {
           alert(data.message || '載入管理員主控台失敗');
           if (data.message === 'NO_PERMISSION') backToMemberCenter();
           return;
         }
+
         campaignAdminDashboard = data;
         renderCampaignAdminSummary(data);
         renderAdminPortalSections(data.portal || {});
         applyCampaignAdminFilters();
 
         const availableIds = new Set((data.campaigns || []).map(item => item.campaignId));
-        if (selectedAdminCampaignId && availableIds.has(selectedAdminCampaignId)) {
-          await loadCampaignAdminDetail(selectedAdminCampaignId, force);
-        } else if ((data.campaigns || []).length) {
-          await loadCampaignAdminDetail(data.campaigns[0].campaignId, force);
+        const preferredId = selectedAdminCampaignId && availableIds.has(selectedAdminCampaignId)
+          ? selectedAdminCampaignId
+          : (data.initialCampaignId || ((data.campaigns || [])[0] && data.campaigns[0].campaignId) || '');
+
+        if (data.initialDetail && data.initialDetail.ok && preferredId === (data.initialCampaignId || '')) {
+          campaignAdminDetailMemoryCache[preferredId] = data.initialDetail;
+          renderCampaignDashboardDetail(data.initialDetail);
+        } else if (preferredId) {
+          loadCampaignAdminDetail(preferredId, force);
         } else {
           renderCampaignDashboardDetail(null);
         }
