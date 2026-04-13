@@ -893,11 +893,11 @@
           <div class="grid-two">
             <div class="mini-stat">
               <div class="label">累積消費</div>
-              <div id="totalSpendDisplay" class="value">$0</div>
+              <div id="totalSpendDisplay" class="value">載入中</div>
             </div>
             <div class="mini-stat">
               <div class="label">抽獎次數</div>
-              <div id="spinCountDisplay" class="value">0</div>
+              <div id="spinCountDisplay" class="value">載入中</div>
             </div>
           </div>
 
@@ -934,13 +934,15 @@
               </div>
 
               <div id="spinHint" class="spin-hint">點擊下方按鈕開始抽獎</div>
-              <button id="spinBtn" class="btn btn-danger">立即抽獎（扣 6 點）</button>
+              <button id="spinBtn" class="btn btn-danger" disabled>會員資料載入中...</button>
               <div id="lotteryResult" class="result-box hidden"></div>
             </div>
 
             <div class="card">
               <div class="section-label" style="color:#6d8382; text-align:center;">本期獎項</div>
-              <div id="prizeList" class="prize-list"></div>
+              <div id="prizeList" class="prize-list">
+                <div class="coupon-empty">獎項載入中...</div>
+              </div>
             </div>
           </div>
 
@@ -950,13 +952,19 @@
               <div class="help-text">待兌換的獎品會一直保留在這裡，出示兌換碼給店員掃描核銷即可。</div>
 
               <div class="coupon-section-title">待兌換</div>
-              <div id="unredeemedList" class="prize-list"></div>
+              <div id="unredeemedList" class="prize-list">
+                <div class="coupon-empty">獎品載入中...</div>
+              </div>
 
               <div class="coupon-section-title">已兌換</div>
-              <div id="redeemedList" class="prize-list"></div>
+              <div id="redeemedList" class="prize-list">
+                <div class="coupon-empty">獎品載入中...</div>
+              </div>
 
               <div class="coupon-section-title">已過期</div>
-              <div id="expiredList" class="prize-list"></div>
+              <div id="expiredList" class="prize-list">
+                <div class="coupon-empty">獎品載入中...</div>
+              </div>
             </div>
 
             <div id="couponQrCard" class="card hidden">
@@ -1057,11 +1065,15 @@
     let prizeData = [];
     let couponData = { unredeemed: [], redeemed: [], expired: [] };
     let couponLoaded = false;
+    let prizesLoaded = false;
     let currentRotation = 0;
     let spinning = false;
     let audioContext = null;
     let tickTimers = [];
     let currentRedeemDetail = null;
+    let couponLoadingPromise = null;
+    let prizeLoadingPromise = null;
+    let preloadStarted = false;
 
     async function init() {
       try {
@@ -1095,17 +1107,35 @@
 
     async function initMemberMode() {
       showMemberOnly();
-
-      await loadMemberProfile();
-      await loadLotteryPrizes();
-      renderMemberProfile();
-      renderQrCode();
-      renderWheelLabels();
-      renderPrizeList();
       bindTabActions();
       setActiveTab('home');
 
-      preloadCouponsInBackground();
+      // 關鍵優化：先直接畫 QR，不等後端
+      renderQrCode();
+
+      // 會員資料獨立載入，不阻塞 QR
+      loadMemberProfile()
+        .then(() => renderMemberProfile())
+        .catch(err => {
+          console.error('loadMemberProfile failed:', err);
+          document.getElementById('totalSpendDisplay').innerText = '讀取失敗';
+          document.getElementById('spinCountDisplay').innerText = '讀取失敗';
+          document.getElementById('spinBtn').disabled = true;
+          document.getElementById('spinBtn').innerText = '會員資料讀取失敗';
+        });
+
+      // 延後預載，避免一進頁面就搶資源造成 QR 慢
+      startSecondaryPreload();
+    }
+
+    function startSecondaryPreload() {
+      if (preloadStarted) return;
+      preloadStarted = true;
+
+      setTimeout(() => {
+        ensureLotteryDataLoaded().catch(err => console.error('預載獎項失敗', err));
+        ensureCouponDataLoaded().catch(err => console.error('預載獎品失敗', err));
+      }, 350);
     }
 
     function showMemberOnly() {
@@ -1135,7 +1165,7 @@
       }
 
       if (tabName === 'lottery') {
-        showLotteryTab();
+        await showLotteryTab();
         return;
       }
 
@@ -1164,31 +1194,84 @@
       setActiveTab('home');
     }
 
-    function showLotteryTab() {
+    async function showLotteryTab() {
       hideCouponQrCard();
       document.getElementById('memberHome').classList.add('hidden');
       document.getElementById('lotteryView').classList.remove('hidden');
       document.getElementById('couponView').classList.add('hidden');
       setActiveTab('lottery');
+
+      await ensureLotteryDataLoaded();
     }
 
     async function showCouponsTab() {
-      if (!couponLoaded) {
-        await loadMemberCoupons();
-      }
-      renderCouponLists();
       document.getElementById('memberHome').classList.add('hidden');
       document.getElementById('lotteryView').classList.add('hidden');
       document.getElementById('couponView').classList.remove('hidden');
       setActiveTab('coupons');
+
+      await ensureCouponDataLoaded();
+      renderCouponLists();
     }
 
-    async function preloadCouponsInBackground() {
+    async function ensureLotteryDataLoaded(force = false) {
+      if (prizesLoaded && !force) return prizeData;
+      if (prizeLoadingPromise && !force) return prizeLoadingPromise;
+
+      document.getElementById('prizeList').innerHTML = '<div class="coupon-empty">獎項載入中...</div>';
+
+      prizeLoadingPromise = (async () => {
+        const res = await fetch(`${SCRIPT_URL}?action=lottery_prizes&t=${Date.now()}`);
+        prizeData = await res.json();
+        prizesLoaded = true;
+        renderWheelLabels();
+        renderPrizeList();
+        return prizeData;
+      })();
+
       try {
-        await loadMemberCoupons();
-        renderCouponLists();
+        return await prizeLoadingPromise;
       } catch (err) {
-        console.error('背景預載獎品失敗', err);
+        console.error(err);
+        document.getElementById('prizeList').innerHTML = '<div class="coupon-empty">獎項載入失敗，請稍後再試</div>';
+        throw err;
+      } finally {
+        prizeLoadingPromise = null;
+      }
+    }
+
+    async function ensureCouponDataLoaded(force = false) {
+      if (couponLoaded && !force) return couponData;
+      if (couponLoadingPromise && !force) return couponLoadingPromise;
+
+      document.getElementById('unredeemedList').innerHTML = '<div class="coupon-empty">獎品載入中...</div>';
+      document.getElementById('redeemedList').innerHTML = '<div class="coupon-empty">獎品載入中...</div>';
+      document.getElementById('expiredList').innerHTML = '<div class="coupon-empty">獎品載入中...</div>';
+
+      couponLoadingPromise = (async () => {
+        const res = await fetch(`${SCRIPT_URL}?action=member_coupons&uid=${encodeURIComponent(currentProfile.userId)}&t=${Date.now()}`);
+        couponData = await res.json();
+
+        if (!couponData.ok) {
+          alert(couponData.message || '載入獎品失敗');
+          couponData = { unredeemed: [], redeemed: [], expired: [] };
+        } else {
+          couponLoaded = true;
+        }
+
+        return couponData;
+      })();
+
+      try {
+        return await couponLoadingPromise;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('unredeemedList').innerHTML = '<div class="coupon-empty">獎品載入失敗，請稍後再試</div>';
+        document.getElementById('redeemedList').innerHTML = '<div class="coupon-empty">獎品載入失敗，請稍後再試</div>';
+        document.getElementById('expiredList').innerHTML = '<div class="coupon-empty">獎品載入失敗，請稍後再試</div>';
+        throw err;
+      } finally {
+        couponLoadingPromise = null;
       }
     }
 
@@ -1371,30 +1454,12 @@
     async function loadMemberProfile() {
       const res = await fetch(`${SCRIPT_URL}?action=member_profile&uid=${encodeURIComponent(currentProfile.userId)}&name=${encodeURIComponent(currentProfile.displayName)}&t=${Date.now()}`);
       memberData = await res.json();
-    }
-
-    async function loadLotteryPrizes() {
-      const res = await fetch(`${SCRIPT_URL}?action=lottery_prizes&t=${Date.now()}`);
-      prizeData = await res.json();
-    }
-
-    async function loadMemberCoupons(force = false) {
-      if (couponLoaded && !force) return couponData;
-
-      const res = await fetch(`${SCRIPT_URL}?action=member_coupons&uid=${encodeURIComponent(currentProfile.userId)}&t=${Date.now()}`);
-      couponData = await res.json();
-
-      if (!couponData.ok) {
-        alert(couponData.message || '載入獎品失敗');
-        couponData = { unredeemed: [], redeemed: [], expired: [] };
-      } else {
-        couponLoaded = true;
-      }
-
-      return couponData;
+      return memberData;
     }
 
     function renderMemberProfile() {
+      if (!memberData) return;
+
       document.getElementById('pointsDisplay').innerText = memberData.currentPoints || 0;
       document.getElementById('totalSpendDisplay').innerText = `$${Number(memberData.totalSpend || 0).toLocaleString()}`;
       document.getElementById('spinCountDisplay').innerText = memberData.totalSpins || 0;
@@ -1964,6 +2029,11 @@
     }
 
     async function spinLottery() {
+      if (!memberData) {
+        alert('會員資料仍在載入中，請稍候再試');
+        return;
+      }
+
       if (spinning) return;
       if ((memberData.currentPoints || 0) < LOTTERY_COST) {
         alert('點數不足，無法抽獎');
@@ -2024,7 +2094,7 @@
         renderMemberProfile();
 
         couponLoaded = false;
-        await loadMemberCoupons(true);
+        await ensureCouponDataLoaded(true);
         renderCouponLists();
 
         await sleep(1000);
@@ -2043,10 +2113,10 @@
         await loadMemberProfile();
         renderMemberProfile();
       } finally {
-        if ((memberData.currentPoints || 0) < LOTTERY_COST) {
+        if (memberData && (memberData.currentPoints || 0) < LOTTERY_COST) {
           btn.disabled = true;
           btn.innerText = `點數不足（需要 ${LOTTERY_COST} 點）`;
-        } else {
+        } else if (memberData) {
           btn.disabled = false;
           btn.innerText = `立即抽獎（扣 ${LOTTERY_COST} 點）`;
         }
