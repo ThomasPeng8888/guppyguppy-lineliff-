@@ -19,7 +19,6 @@
       --danger: #c62828;
       --success: #188038;
       --gold: #ffd54f;
-      --gold-soft: #fff7cc;
       --line: #e7f0f0;
       --tab-active: #0e5f5c;
       --tab-inactive: #7a8f8e;
@@ -117,9 +116,9 @@
       margin: 12px 0 4px;
     }
 
-    .grid-two {
+    .grid-one {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 10px;
       margin-top: 12px;
     }
@@ -127,19 +126,21 @@
     .mini-stat {
       background: #f6fbfb;
       border-radius: 14px;
-      padding: 12px;
+      padding: 14px 12px;
       text-align: center;
     }
 
     .mini-stat .value {
-      font-size: 20px;
-      font-weight: 800;
+      font-size: 24px;
+      font-weight: 900;
       margin-top: 6px;
+      color: var(--brand-dark);
     }
 
     .mini-stat .label {
       font-size: 12px;
       color: var(--muted);
+      letter-spacing: 0.08em;
     }
 
     .qrcode-wrap {
@@ -887,17 +888,13 @@
           <div class="card points-card">
             <div class="section-label">目前會員點數</div>
             <div id="pointsDisplay" class="points-number">--</div>
-            <div id="tierText">會員等級：一般會員</div>
+            <div id="tierText">品牌會員</div>
           </div>
 
-          <div class="grid-two">
+          <div class="grid-one">
             <div class="mini-stat">
-              <div class="label">累積消費</div>
-              <div id="totalSpendDisplay" class="value">載入中</div>
-            </div>
-            <div class="mini-stat">
-              <div class="label">抽獎次數</div>
-              <div id="spinCountDisplay" class="value">載入中</div>
+              <div class="label">待兌換券</div>
+              <div id="pendingCouponCountDisplay" class="value">載入中</div>
             </div>
           </div>
 
@@ -1109,22 +1106,19 @@
       showMemberOnly();
       bindTabActions();
       setActiveTab('home');
+      document.getElementById('pendingCouponCountDisplay').innerText = '載入中';
 
-      // 關鍵優化：先直接畫 QR，不等後端
       renderQrCode();
 
-      // 會員資料獨立載入，不阻塞 QR
       loadMemberProfile()
         .then(() => renderMemberProfile())
         .catch(err => {
           console.error('loadMemberProfile failed:', err);
-          document.getElementById('totalSpendDisplay').innerText = '讀取失敗';
-          document.getElementById('spinCountDisplay').innerText = '讀取失敗';
+          document.getElementById('pendingCouponCountDisplay').innerText = '讀取失敗';
           document.getElementById('spinBtn').disabled = true;
           document.getElementById('spinBtn').innerText = '會員資料讀取失敗';
         });
 
-      // 延後預載，避免一進頁面就搶資源造成 QR 慢
       startSecondaryPreload();
     }
 
@@ -1259,6 +1253,7 @@
           couponLoaded = true;
         }
 
+        renderCouponSummary();
         return couponData;
       })();
 
@@ -1269,9 +1264,21 @@
         document.getElementById('unredeemedList').innerHTML = '<div class="coupon-empty">獎品載入失敗，請稍後再試</div>';
         document.getElementById('redeemedList').innerHTML = '<div class="coupon-empty">獎品載入失敗，請稍後再試</div>';
         document.getElementById('expiredList').innerHTML = '<div class="coupon-empty">獎品載入失敗，請稍後再試</div>';
+        document.getElementById('pendingCouponCountDisplay').innerText = '0';
         throw err;
       } finally {
         couponLoadingPromise = null;
+      }
+    }
+
+    function renderCouponSummary() {
+      const pendingCount = (couponData && couponData.unredeemed)
+        ? couponData.unredeemed.length
+        : 0;
+
+      const pendingEl = document.getElementById('pendingCouponCountDisplay');
+      if (pendingEl) {
+        pendingEl.innerText = pendingCount;
       }
     }
 
@@ -1461,9 +1468,7 @@
       if (!memberData) return;
 
       document.getElementById('pointsDisplay').innerText = memberData.currentPoints || 0;
-      document.getElementById('totalSpendDisplay').innerText = `$${Number(memberData.totalSpend || 0).toLocaleString()}`;
-      document.getElementById('spinCountDisplay').innerText = memberData.totalSpins || 0;
-      document.getElementById('tierText').innerText = `會員等級：${memberData.memberTier || '一般會員'}`;
+      document.getElementById('tierText').innerText = `${memberData.memberTier || '品牌會員'}`;
 
       const spinBtn = document.getElementById('spinBtn');
       if ((memberData.currentPoints || 0) < LOTTERY_COST) {
