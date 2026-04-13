@@ -118,7 +118,7 @@
 
     .grid-one {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
       margin-top: 12px;
     }
@@ -966,7 +966,7 @@
       border-radius: 18px;
       box-shadow: 0 10px 28px rgba(0,0,0,0.1);
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       padding: 8px;
       z-index: 40;
       backdrop-filter: blur(10px);
@@ -1002,6 +1002,184 @@
       height: 8px;
     }
 
+
+    .campaign-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .campaign-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #e5efef;
+      border-radius: 16px;
+      padding: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fcfc 100%);
+      box-shadow: 0 8px 20px rgba(14,95,92,0.05);
+    }
+
+    .campaign-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(14,95,92,0.06), rgba(255,255,255,0) 40%);
+      pointer-events: none;
+    }
+
+    .campaign-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campaign-code {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand-dark);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+
+    .campaign-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .campaign-badge.open { background: #e8f7f6; color: #0e5f5c; }
+    .campaign-badge.upcoming { background: #eef3ff; color: #3558c4; }
+    .campaign-badge.awaiting { background: #fff6df; color: #9a6500; }
+    .campaign-badge.drawn { background: #f0f4f4; color: #4d6362; }
+    .campaign-badge.won { background: #fff3cd; color: #a86200; }
+
+    .campaign-title {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-top: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campaign-desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+      margin-top: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campaign-prize-box {
+      margin-top: 12px;
+      background: #fff9ea;
+      border: 1px solid #f4ddb0;
+      border-radius: 14px;
+      padding: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campaign-prize-box strong {
+      display: block;
+      font-size: 15px;
+      color: #8b5c00;
+    }
+
+    .campaign-prize-box span {
+      display: block;
+      font-size: 12px;
+      color: #9c7d32;
+      line-height: 1.6;
+      margin-top: 4px;
+    }
+
+    .campaign-meta {
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campaign-meta strong {
+      color: var(--text);
+    }
+
+    .campaign-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campaign-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f4f9f9;
+      border: 1px solid #ddeaea;
+      font-size: 11px;
+      color: var(--brand-dark);
+      font-weight: 800;
+    }
+
+    .campaign-message {
+      margin-top: 10px;
+      background: #f7fbfb;
+      border: 1px dashed #d8e6e6;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--brand-dark);
+      position: relative;
+      z-index: 1;
+    }
+
+    .campaign-action-row {
+      margin-top: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .campaign-winner-ticket {
+      background: linear-gradient(135deg, #fffdf3 0%, #fff7db 100%);
+      border: 1px solid #f0df9a;
+    }
+
+    .campaign-empty {
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      background: #fbfefe;
+    }
+
     .footer-text {
       text-align: center;
       color: var(--muted);
@@ -1035,6 +1213,10 @@
               <div class="label">待兌換券</div>
               <div id="pendingCouponCountDisplay" class="value">載入中</div>
             </div>
+            <div class="mini-stat">
+              <div class="label">活動進行中</div>
+              <div id="activeCampaignCountDisplay" class="value">載入中</div>
+            </div>
           </div>
 
           <div id="memberHome">
@@ -1047,6 +1229,7 @@
             <div class="card">
               <div class="section-label" style="color:#6d8382; text-align:center;">快速入口</div>
               <button id="homeGoLotteryBtn" class="btn btn-accent">前往抽獎</button>
+              <button id="homeGoCampaignBtn" class="btn btn-primary">前往活動抽獎</button>
               <button id="homeGoCouponsBtn" class="btn btn-primary">前往我的獎品</button>
               <button onclick="liff.closeWindow()" class="btn btn-ghost">關閉視窗</button>
             </div>
@@ -1119,6 +1302,53 @@
             </div>
           </div>
 
+
+          <div id="campaignView" class="hidden">
+            <div class="card">
+              <div class="section-label" style="color:#6d8382; text-align:center;">活動抽獎專區</div>
+              <div class="help-text">只要曾經有購買紀錄的會員，就可以在活動開放期間完成登記。活動截止後會由管理員或系統自動抽出得獎者，中獎後可在這裡查看與核銷。</div>
+
+              <div class="coupon-section-title">登記中活動</div>
+              <div id="campaignOpenList" class="campaign-list">
+                <div class="campaign-empty">活動載入中...</div>
+              </div>
+
+              <div class="coupon-section-title">即將開始</div>
+              <div id="campaignUpcomingList" class="campaign-list">
+                <div class="campaign-empty">活動載入中...</div>
+              </div>
+
+              <div class="coupon-section-title">已截止 / 已開獎</div>
+              <div id="campaignClosedList" class="campaign-list">
+                <div class="campaign-empty">活動載入中...</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="section-label" style="color:#6d8382; text-align:center;">我的活動中獎紀錄</div>
+              <div class="help-text">若活動中獎，會出現在這裡。出示兌換碼給店員掃描即可核銷。</div>
+
+              <div id="campaignWinnerList" class="prize-list">
+                <div class="coupon-empty">尚無活動中獎紀錄</div>
+              </div>
+            </div>
+
+            <div id="campaignQrCard" class="card hidden">
+              <div class="section-label" style="color:#6d8382; text-align:center;">出示活動兌換碼</div>
+              <div class="coupon-detail-box">
+                <strong id="campaignPrizeNameText" style="font-size:16px;"></strong>
+                <div id="campaignNameText" class="help-text" style="margin-top:6px;"></div>
+                <div id="campaignDrawTimeText" class="help-text" style="margin-top:6px;"></div>
+                <div id="campaignStatusText" class="help-text" style="margin-top:6px;"></div>
+                <div id="campaignWinnerQrCode"></div>
+                <div id="campaignRedeemCodeText" class="coupon-code"></div>
+                <div id="campaignPickupHintText" class="coupon-pickup-hint centered">請出示此活動兌換碼給店員核銷</div>
+              </div>
+
+              <button id="hideCampaignQrBtn" class="btn btn-ghost">收起活動兌換碼</button>
+            </div>
+          </div>
+
           <div class="tab-spacer"></div>
 
           <div id="memberTabs" class="bottom-tabs">
@@ -1129,6 +1359,10 @@
             <button id="tabLottery" class="tab-btn" type="button">
               <span class="emoji">🎯</span>
               抽獎
+            </button>
+            <button id="tabCampaigns" class="tab-btn" type="button">
+              <span class="emoji">🎉</span>
+              活動
             </button>
             <button id="tabCoupons" class="tab-btn" type="button">
               <span class="emoji">🎁</span>
@@ -1207,9 +1441,13 @@
     let audioContext = null;
     let tickTimers = [];
     let currentRedeemDetail = null;
+    let currentCampaignRedeemDetail = null;
     let couponLoadingPromise = null;
     let prizeLoadingPromise = null;
+    let campaignLoadingPromise = null;
     let preloadStarted = false;
+    let campaignLoaded = false;
+    let campaignCenterData = { openCampaigns: [], upcomingCampaigns: [], closedCampaigns: [], winnerRecords: [], activeCampaignCount: 0 };
 
     async function init() {
       try {
@@ -1232,6 +1470,8 @@
           await initStaffMode(params);
         } else if (act === 'redeem_prize') {
           await initStaffRedeemMode(params);
+        } else if (act === 'redeem_campaign') {
+          await initStaffCampaignRedeemMode(params);
         } else {
           await initMemberMode();
         }
@@ -1279,11 +1519,14 @@
     function bindTabActions() {
       document.getElementById('tabHome').onclick = () => switchTab('home');
       document.getElementById('tabLottery').onclick = () => switchTab('lottery');
+      document.getElementById('tabCampaigns').onclick = () => switchTab('campaigns');
       document.getElementById('tabCoupons').onclick = () => switchTab('coupons');
 
       document.getElementById('homeGoLotteryBtn').onclick = () => switchTab('lottery');
+      document.getElementById('homeGoCampaignBtn').onclick = () => switchTab('campaigns');
       document.getElementById('homeGoCouponsBtn').onclick = () => switchTab('coupons');
       document.getElementById('hideCouponQrBtn').onclick = hideCouponQrCard;
+      document.getElementById('hideCampaignQrBtn').onclick = hideCampaignQrCard;
 
       document.getElementById('spinBtn').onclick = spinLottery;
     }
@@ -1301,6 +1544,11 @@
         return;
       }
 
+      if (tabName === 'campaigns') {
+        await showCampaignTab();
+        return;
+      }
+
       if (tabName === 'coupons') {
         await showCouponsTab();
       }
@@ -1310,6 +1558,7 @@
       const tabs = [
         { id: 'tabHome', key: 'home' },
         { id: 'tabLottery', key: 'lottery' },
+        { id: 'tabCampaigns', key: 'campaigns' },
         { id: 'tabCoupons', key: 'coupons' }
       ];
 
@@ -1320,16 +1569,20 @@
 
     function showHomeTab() {
       hideCouponQrCard();
+      hideCampaignQrCard();
       document.getElementById('memberHome').classList.remove('hidden');
       document.getElementById('lotteryView').classList.add('hidden');
+      document.getElementById('campaignView').classList.add('hidden');
       document.getElementById('couponView').classList.add('hidden');
       setActiveTab('home');
     }
 
     async function showLotteryTab() {
       hideCouponQrCard();
+      hideCampaignQrCard();
       document.getElementById('memberHome').classList.add('hidden');
       document.getElementById('lotteryView').classList.remove('hidden');
+      document.getElementById('campaignView').classList.add('hidden');
       document.getElementById('couponView').classList.add('hidden');
       setActiveTab('lottery');
 
@@ -1337,8 +1590,10 @@
     }
 
     async function showCouponsTab() {
+      hideCampaignQrCard();
       document.getElementById('memberHome').classList.add('hidden');
       document.getElementById('lotteryView').classList.add('hidden');
+      document.getElementById('campaignView').classList.add('hidden');
       document.getElementById('couponView').classList.remove('hidden');
       setActiveTab('coupons');
 
@@ -1423,6 +1678,419 @@
         memberData.pendingCouponCount = pendingCount;
       }
     }
+
+
+    function renderCampaignSummary() {
+      const activeCount = (campaignCenterData && campaignCenterData.activeCampaignCount !== undefined)
+        ? campaignCenterData.activeCampaignCount
+        : (memberData && memberData.activeCampaignCount) || 0;
+
+      const activeEl = document.getElementById('activeCampaignCountDisplay');
+      if (activeEl) activeEl.innerText = activeCount || 0;
+
+      if (memberData) {
+        memberData.activeCampaignCount = activeCount || 0;
+      }
+    }
+
+    async function ensureCampaignDataLoaded(force = false) {
+      if (campaignLoaded && !force) return campaignCenterData;
+      if (campaignLoadingPromise && !force) return campaignLoadingPromise;
+
+      document.getElementById('campaignOpenList').innerHTML = '<div class="campaign-empty">活動載入中...</div>';
+      document.getElementById('campaignUpcomingList').innerHTML = '<div class="campaign-empty">活動載入中...</div>';
+      document.getElementById('campaignClosedList').innerHTML = '<div class="campaign-empty">活動載入中...</div>';
+      document.getElementById('campaignWinnerList').innerHTML = '<div class="coupon-empty">活動紀錄載入中...</div>';
+
+      campaignLoadingPromise = (async () => {
+        const res = await fetch(`${SCRIPT_URL}?action=member_campaign_center&uid=${encodeURIComponent(currentProfile.userId)}&name=${encodeURIComponent(currentProfile.displayName)}&t=${Date.now()}`);
+        campaignCenterData = await res.json();
+
+        if (!campaignCenterData.ok) {
+          alert(campaignCenterData.message || '載入活動失敗');
+          campaignCenterData = { openCampaigns: [], upcomingCampaigns: [], closedCampaigns: [], winnerRecords: [], activeCampaignCount: 0 };
+        } else {
+          campaignLoaded = true;
+        }
+
+        renderCampaignSummary();
+        return campaignCenterData;
+      })();
+
+      try {
+        return await campaignLoadingPromise;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('campaignOpenList').innerHTML = '<div class="campaign-empty">活動載入失敗，請稍後再試</div>';
+        document.getElementById('campaignUpcomingList').innerHTML = '<div class="campaign-empty">活動載入失敗，請稍後再試</div>';
+        document.getElementById('campaignClosedList').innerHTML = '<div class="campaign-empty">活動載入失敗，請稍後再試</div>';
+        document.getElementById('campaignWinnerList').innerHTML = '<div class="coupon-empty">活動紀錄載入失敗，請稍後再試</div>';
+        throw err;
+      } finally {
+        campaignLoadingPromise = null;
+      }
+    }
+
+    async function showCampaignTab() {
+      hideCouponQrCard();
+      document.getElementById('memberHome').classList.add('hidden');
+      document.getElementById('lotteryView').classList.add('hidden');
+      document.getElementById('couponView').classList.add('hidden');
+      document.getElementById('campaignView').classList.remove('hidden');
+      setActiveTab('campaigns');
+
+      await ensureCampaignDataLoaded();
+      renderCampaignCenter();
+    }
+
+    function createCampaignStatusBadge(item) {
+      if (item.memberWon) return '<span class="campaign-badge won">恭喜中獎</span>';
+      if (item.effectiveStatus === 'registration_open') return '<span class="campaign-badge open">登記中</span>';
+      if (item.effectiveStatus === 'upcoming') return '<span class="campaign-badge upcoming">即將開始</span>';
+      if (item.effectiveStatus === 'awaiting_draw') return '<span class="campaign-badge awaiting">等待抽獎</span>';
+      return '<span class="campaign-badge drawn">已截止</span>';
+    }
+
+    function createCampaignCard(item) {
+      const card = document.createElement('div');
+      card.className = 'campaign-card';
+
+      const chips = [
+        `名額 ${item.winnerCount || 1} 位`,
+        item.eligible ? '已符合會員資格' : '需先有購買紀錄'
+      ];
+
+      if (item.alreadyRegistered) chips.push('已完成登記');
+      if (item.memberWon) chips.push('本活動已中獎');
+
+      let actionHtml = '';
+      if (item.canRegister) {
+        actionHtml = `<div class="campaign-action-row"><button class="btn btn-primary" data-campaign-register="${escapeHtml(item.campaignId)}">立即登記參加</button></div>`;
+      } else if (item.alreadyRegistered || item.memberWon) {
+        actionHtml = `<div class="campaign-action-row"><button class="btn btn-success" disabled>已完成登記</button></div>`;
+      } else {
+        actionHtml = `<div class="campaign-action-row"><button class="btn btn-ghost" disabled>目前無法登記</button></div>`;
+      }
+
+      card.innerHTML = `
+        <div class="campaign-top">
+          <span class="campaign-code">${escapeHtml(item.campaignId)}</span>
+          ${createCampaignStatusBadge(item)}
+        </div>
+        <div class="campaign-title">${escapeHtml(item.campaignName || '')}</div>
+        <div class="campaign-desc">${escapeHtml(item.campaignDesc || '')}</div>
+        <div class="campaign-prize-box">
+          <strong>🎁 ${escapeHtml(item.prizeName || '')}</strong>
+          <span>${escapeHtml(item.prizeDesc || '活動獎品')}</span>
+        </div>
+        <div class="campaign-chip-row">
+          ${chips.map(chip => `<span class="campaign-chip">${escapeHtml(chip)}</span>`).join('')}
+        </div>
+        <div class="campaign-meta">
+          <div>登記開始：<strong>${escapeHtml(item.registerStartAt || '-')}</strong></div>
+          <div>登記截止：<strong>${escapeHtml(item.registerEndAt || '-')}</strong></div>
+          <div>抽獎時間：<strong>${escapeHtml(item.drawAt || '截止後抽出')}</strong></div>
+        </div>
+        <div class="campaign-message">${escapeHtml(item.memberMessage || '')}</div>
+        ${actionHtml}
+      `;
+
+      const registerBtn = card.querySelector('[data-campaign-register]');
+      if (registerBtn) {
+        registerBtn.onclick = () => registerCampaign(registerBtn.getAttribute('data-campaign-register'));
+      }
+
+      return card;
+    }
+
+    function createCampaignWinnerItem(item) {
+      const wrap = document.createElement('div');
+      wrap.className = 'coupon-ticket campaign-winner-ticket';
+
+      let badgeClass = 'unredeemed';
+      let stampHtml = '';
+      if (item.winnerStatus === 'REDEEMED') {
+        badgeClass = 'redeemed';
+        stampHtml = '<div class="coupon-stamp redeemed">已兌換</div>';
+      } else if (item.winnerStatus === 'EXPIRED') {
+        badgeClass = 'expired';
+        stampHtml = '<div class="coupon-stamp expired">已過期</div>';
+      }
+
+      wrap.innerHTML = `
+        <div class="coupon-corner-label">${item.winnerStatus === 'REDEEMED' ? 'USED' : (item.winnerStatus === 'EXPIRED' ? 'EXPIRED' : 'EVENT WIN')}</div>
+        <div class="coupon-brand-mark">🎉 CAMPAIGN WINNER RECORD</div>
+        <div class="coupon-top">
+          <div class="coupon-title-wrap">
+            <span class="coupon-subtitle">${escapeHtml(item.campaignName || '活動中獎')}</span>
+            <strong class="coupon-title">${escapeHtml(item.prizeName || '')}</strong>
+          </div>
+          <div class="coupon-icon-bubble">🏆</div>
+        </div>
+
+        <div class="coupon-chip-row">
+          <span class="coupon-chip">🎊 活動中獎</span>
+          <span class="coupon-chip">🧾 需核銷</span>
+          <span class="coupon-badge ${badgeClass}">${escapeHtml(item.winnerStatusText || '')}</span>
+        </div>
+
+        <div class="coupon-divider"></div>
+
+        <div class="coupon-meta">
+          <div>活動名稱：<strong>${escapeHtml(item.campaignName || '')}</strong></div>
+          <div>開獎時間：<strong>${escapeHtml(item.drawTime || '')}</strong></div>
+          ${item.expireAt ? `<div>到期時間：<strong>${escapeHtml(item.expireAt)}</strong></div>` : ''}
+          ${item.redeemedAt ? `<div>核銷時間：<strong>${escapeHtml(item.redeemedAt)}</strong></div>` : ''}
+          ${item.redeemedByName ? `<div>核銷人員：<strong>${escapeHtml(item.redeemedByName)}</strong></div>` : ''}
+        </div>
+
+        <div class="coupon-pickup-hint">活動獎品請出示兌換碼給店員掃描核銷</div>
+        ${stampHtml}
+      `;
+
+      if (item.winnerStatus === 'UNREDEEMED') {
+        const actionRow = document.createElement('div');
+        actionRow.className = 'coupon-action-row';
+
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primary';
+        btn.innerText = '立即出示活動兌換碼';
+        btn.onclick = () => showCampaignWinnerQrInstant(item);
+
+        actionRow.appendChild(btn);
+        wrap.appendChild(actionRow);
+      }
+
+      return wrap;
+    }
+
+    function renderCampaignList(listId, items, emptyText) {
+      const el = document.getElementById(listId);
+      el.innerHTML = '';
+
+      if (!items || !items.length) {
+        el.innerHTML = `<div class="campaign-empty">${escapeHtml(emptyText)}</div>`;
+        return;
+      }
+
+      items.forEach(item => el.appendChild(createCampaignCard(item)));
+    }
+
+    function renderCampaignCenter() {
+      renderCampaignSummary();
+      renderCampaignList('campaignOpenList', campaignCenterData.openCampaigns || [], '目前沒有開放登記活動');
+      renderCampaignList('campaignUpcomingList', campaignCenterData.upcomingCampaigns || [], '近期沒有即將開始活動');
+      renderCampaignList('campaignClosedList', campaignCenterData.closedCampaigns || [], '目前沒有已截止活動');
+
+      const winnerList = document.getElementById('campaignWinnerList');
+      winnerList.innerHTML = '';
+      const winners = campaignCenterData.winnerRecords || [];
+      if (!winners.length) {
+        winnerList.innerHTML = '<div class="coupon-empty">目前尚無活動中獎紀錄</div>';
+      } else {
+        winners.forEach(item => winnerList.appendChild(createCampaignWinnerItem(item)));
+      }
+    }
+
+    async function registerCampaign(campaignId) {
+      if (!campaignId) return;
+
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'campaign_register',
+          campaignId: campaignId,
+          userId: currentProfile.userId,
+          displayName: currentProfile.displayName
+        })
+      });
+
+      const result = await res.json();
+      if (!result.ok) {
+        alert(result.message || '活動登記失敗');
+        return;
+      }
+
+      alert(`活動登記成功\n活動：${result.campaignName}\n時間：${result.registerTime}`);
+      campaignLoaded = false;
+      await ensureCampaignDataLoaded(true);
+      renderCampaignCenter();
+
+      await loadMemberProfile();
+      renderMemberProfile();
+    }
+
+    function renderCampaignWinnerQrCard(item) {
+      document.getElementById('campaignPrizeNameText').innerText = `🏆 ${item.prizeName || ''}`;
+      document.getElementById('campaignNameText').innerText = `活動：${item.campaignName || ''}`;
+      document.getElementById('campaignDrawTimeText').innerText = `開獎時間：${item.drawTime || ''}`;
+      document.getElementById('campaignStatusText').innerText =
+        `${item.winnerStatusText || ''}${item.expireAt ? `｜到期：${item.expireAt}` : ''}`;
+      document.getElementById('campaignRedeemCodeText').innerText = item.redeemCode || '';
+
+      const qrContainer = document.getElementById('campaignWinnerQrCode');
+      qrContainer.innerHTML = '';
+      new QRCode(qrContainer, {
+        text: item.redeemQrPayload,
+        width: 180,
+        height: 180,
+        colorDark: '#0e5f5c',
+        colorLight: '#ffffff'
+      });
+
+      document.getElementById('campaignQrCard').classList.remove('hidden');
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    async function showCampaignWinnerQrInstant(item) {
+      if (!item || item.winnerStatus !== 'UNREDEEMED') {
+        alert('這份活動獎品目前無法出示兌換碼');
+        return;
+      }
+
+      if (item.redeemQrPayload && item.redeemCode) {
+        renderCampaignWinnerQrCard(item);
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `${SCRIPT_URL}?action=campaign_winner_detail&winnerId=${encodeURIComponent(item.winnerId)}&code=${encodeURIComponent(item.redeemCode || '')}&t=${Date.now()}`
+        );
+        const detail = await res.json();
+
+        if (!detail.ok) {
+          alert(detail.message || '無法讀取這份活動獎品');
+          return;
+        }
+
+        renderCampaignWinnerQrCard(detail);
+      } catch (err) {
+        console.error(err);
+        alert('載入活動兌換碼失敗');
+      }
+    }
+
+    function hideCampaignQrCard() {
+      const card = document.getElementById('campaignQrCard');
+      if (!card) return;
+      card.classList.add('hidden');
+      document.getElementById('campaignWinnerQrCode').innerHTML = '';
+      document.getElementById('campaignRedeemCodeText').innerText = '';
+    }
+
+    async function initStaffCampaignRedeemMode(params) {
+      document.getElementById('memberView').classList.add('hidden');
+      document.getElementById('staffView').classList.add('hidden');
+      document.getElementById('staffRedeemView').classList.remove('hidden');
+
+      const winnerId = params.get('winnerId') || '';
+      const code = params.get('code') || '';
+
+      if (!winnerId || !code) {
+        alert('缺少活動核銷資訊，無法進行核銷');
+        liff.closeWindow();
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `${SCRIPT_URL}?action=campaign_winner_detail&winnerId=${encodeURIComponent(winnerId)}&code=${encodeURIComponent(code)}&t=${Date.now()}`
+        );
+        const detail = await res.json();
+
+        if (!detail.ok) {
+          alert(detail.message || '找不到這份活動獎品');
+          liff.closeWindow();
+          return;
+        }
+
+        currentCampaignRedeemDetail = detail;
+        renderStaffCampaignRedeemDetail(detail);
+
+        const confirmBtn = document.getElementById('confirmRedeemBtn');
+        confirmBtn.onclick = async () => {
+          if (!currentCampaignRedeemDetail) return;
+
+          if (currentCampaignRedeemDetail.winnerStatus === 'REDEEMED') {
+            alert('這份活動獎品已經核銷過了');
+            return;
+          }
+
+          if (currentCampaignRedeemDetail.winnerStatus === 'EXPIRED') {
+            alert('這份活動獎品已過期，無法核銷');
+            return;
+          }
+
+          if (!confirm(`確認核銷活動獎品「${currentCampaignRedeemDetail.prizeName}」嗎？`)) return;
+
+          confirmBtn.disabled = true;
+          confirmBtn.innerText = '核銷中...';
+
+          try {
+            const redeemRes = await fetch(SCRIPT_URL, {
+              method: 'POST',
+              body: JSON.stringify({
+                action: 'campaign_winner_redeem_staff',
+                winnerId: currentCampaignRedeemDetail.winnerId,
+                redeemCode: currentCampaignRedeemDetail.redeemCode,
+                staffId: currentProfile.userId,
+                staffName: currentProfile.displayName
+              })
+            });
+
+            const redeemResult = await redeemRes.json();
+
+            if (!redeemResult.ok) {
+              alert(redeemResult.message || '活動獎品核銷失敗');
+              confirmBtn.disabled = false;
+              confirmBtn.innerText = '確認核銷';
+              return;
+            }
+
+            alert(`活動獎品核銷成功\n會員：${redeemResult.memberName}\n獎品：${redeemResult.prizeName}\n時間：${redeemResult.redeemedAt}`);
+            liff.closeWindow();
+          } catch (err) {
+            console.error(err);
+            alert('通訊失敗，請稍後再試');
+            confirmBtn.disabled = false;
+            confirmBtn.innerText = '確認核銷';
+          }
+        };
+      } catch (err) {
+        console.error(err);
+        alert('載入活動核銷資訊失敗');
+        liff.closeWindow();
+      }
+    }
+
+    function renderStaffCampaignRedeemDetail(detail) {
+      document.getElementById('redeemMemberName').innerText = detail.memberName || '未命名會員';
+      document.getElementById('redeemPrizeName').innerText = `${detail.prizeName || '---'}（${detail.campaignName || '活動獎品'}）`;
+      document.getElementById('redeemCouponStatus').innerText = detail.winnerStatusText || '---';
+      document.getElementById('redeemCouponCode').innerText = detail.redeemCode || '---';
+      document.getElementById('redeemSpinTime').innerText = detail.drawTime || '---';
+
+      const extraInfo = document.getElementById('redeemExtraInfo');
+      const confirmBtn = document.getElementById('confirmRedeemBtn');
+
+      if (detail.winnerStatus === 'REDEEMED') {
+        extraInfo.innerHTML = `<strong>已核銷時間：</strong>${escapeHtml(detail.redeemedAt || '')}<br><strong>核銷人員：</strong>${escapeHtml(detail.redeemedByName || '')}`;
+        confirmBtn.disabled = true;
+        confirmBtn.innerText = '已完成核銷';
+      } else if (detail.winnerStatus === 'EXPIRED') {
+        extraInfo.innerHTML = `<strong>已過期</strong>${detail.expireAt ? `（到期：${escapeHtml(detail.expireAt)}）` : ''}`;
+        confirmBtn.disabled = true;
+        confirmBtn.innerText = '已過期';
+      } else {
+        extraInfo.innerHTML = detail.expireAt
+          ? `<strong>到期日：</strong>${escapeHtml(detail.expireAt)}`
+          : '<strong>目前可正常核銷</strong>';
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = '確認核銷';
+      }
+    }
+
 
     async function initStaffMode(params) {
       document.getElementById('memberView').classList.add('hidden');
@@ -1615,6 +2283,11 @@
       const pendingEl = document.getElementById('pendingCouponCountDisplay');
       if (pendingEl && memberData.pendingCouponCount !== undefined) {
         pendingEl.innerText = memberData.pendingCouponCount || 0;
+      }
+
+      const activeCampaignEl = document.getElementById('activeCampaignCountDisplay');
+      if (activeCampaignEl && memberData.activeCampaignCount !== undefined) {
+        activeCampaignEl.innerText = memberData.activeCampaignCount || 0;
       }
 
       const spinBtn = document.getElementById('spinBtn');
