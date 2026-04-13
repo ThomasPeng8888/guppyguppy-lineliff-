@@ -1180,6 +1180,144 @@
       background: #fbfefe;
     }
 
+    .field select {
+      width: 100%;
+      border: 1px solid #d6e4e4;
+      border-radius: 12px;
+      padding: 13px 12px;
+      font-size: 16px;
+      outline: none;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .admin-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .admin-toolbar .btn {
+      width: auto;
+      margin-top: 0;
+      padding: 12px 14px;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+
+    .campaign-admin-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .campaign-admin-card {
+      background: #f9fcfc;
+      border: 1px solid #e2eeee;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 6px 16px rgba(14,95,92,0.04);
+    }
+
+    .campaign-admin-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .campaign-admin-id {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #ecf6f6;
+      color: var(--brand-dark);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+
+    .campaign-admin-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--brand-dark);
+      margin-top: 8px;
+      line-height: 1.35;
+    }
+
+    .campaign-admin-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-top: 6px;
+    }
+
+    .campaign-admin-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .campaign-admin-stat {
+      background: #fff;
+      border: 1px solid #e7f0f0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .campaign-admin-stat strong {
+      display: block;
+      color: var(--brand-dark);
+      font-size: 15px;
+      margin-top: 2px;
+    }
+
+    .campaign-admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .admin-action-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--brand-soft);
+      color: var(--brand-dark);
+    }
+
+    .admin-action-btn.warn {
+      background: #fff3cd;
+      color: #8a5a00;
+    }
+
+    .admin-action-btn.primary {
+      background: var(--brand-color);
+      color: #fff;
+    }
+
+    .admin-action-btn.danger {
+      background: #ffe4e1;
+      color: #a62828;
+    }
+
+    .admin-status-line {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
     .footer-text {
       text-align: center;
       color: var(--muted);
@@ -1230,6 +1368,7 @@
               <div class="section-label" style="color:#6d8382; text-align:center;">快速入口</div>
               <button id="homeGoLotteryBtn" class="btn btn-accent">前往抽獎</button>
               <button id="homeGoCampaignBtn" class="btn btn-primary">前往活動抽獎</button>
+              <button id="homeGoCampaignAdminBtn" class="btn btn-success hidden">活動管理後台</button>
               <button id="homeGoCouponsBtn" class="btn btn-primary">前往我的獎品</button>
               <button onclick="liff.closeWindow()" class="btn btn-ghost">關閉視窗</button>
             </div>
@@ -1420,6 +1559,132 @@
           </div>
         </div>
 
+
+        <div id="campaignAdminView" class="hidden">
+          <div class="card">
+            <div class="section-label" style="color:#6d8382; text-align:center;">活動管理後台</div>
+            <div class="help-text">你可以在這裡建立活動、上架或下架、立即截止登記、手動抽獎。這樣就不用再回 Google Sheet 手動調整欄位。</div>
+
+            <div class="grid-one">
+              <div class="mini-stat">
+                <div class="label">活動總數</div>
+                <div id="adminTotalCampaignsDisplay" class="value">--</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">登記中</div>
+                <div id="adminOpenCampaignsDisplay" class="value">--</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">等待抽獎</div>
+                <div id="adminAwaitingCampaignsDisplay" class="value">--</div>
+              </div>
+              <div class="mini-stat">
+                <div class="label">待核銷獎品</div>
+                <div id="adminPendingRedeemDisplay" class="value">--</div>
+              </div>
+            </div>
+
+            <div class="admin-toolbar">
+              <button id="adminBackToMemberBtn" class="btn btn-ghost" type="button">返回會員中心</button>
+              <button id="adminRefreshBtn" class="btn btn-primary" type="button">重新整理</button>
+              <button id="adminCreateNewBtn" class="btn btn-accent" type="button">新增活動</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-label" style="color:#6d8382; text-align:center;">建立 / 編輯活動</div>
+
+            <input id="adminCampaignId" type="hidden">
+
+            <div class="field">
+              <label for="adminCampaignName">活動名稱</label>
+              <input id="adminCampaignName" type="text" placeholder="例如：夏季會員抽獎活動">
+            </div>
+
+            <div class="field">
+              <label for="adminCampaignDesc">活動說明</label>
+              <textarea id="adminCampaignDesc" rows="3" placeholder="例如：凡曾有購買紀錄會員，可於活動期間完成登記"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="adminPrizeName">獎品名稱</label>
+              <input id="adminPrizeName" type="text" placeholder="例如：孔雀魚精品套組">
+            </div>
+
+            <div class="field">
+              <label for="adminPrizeDesc">獎品說明</label>
+              <textarea id="adminPrizeDesc" rows="2" placeholder="例如：限門市領取，依現場供貨為準"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="adminWinnerCount">名額數量</label>
+              <input id="adminWinnerCount" type="number" min="1" step="1" value="1">
+            </div>
+
+            <div class="field">
+              <label for="adminRegisterStartAt">登記開始時間</label>
+              <input id="adminRegisterStartAt" type="datetime-local">
+            </div>
+
+            <div class="field">
+              <label for="adminRegisterEndAt">登記結束時間</label>
+              <input id="adminRegisterEndAt" type="datetime-local">
+            </div>
+
+            <div class="field">
+              <label for="adminDrawAt">預計抽獎時間</label>
+              <input id="adminDrawAt" type="datetime-local">
+            </div>
+
+            <div class="field">
+              <label for="adminEligibilityRule">參加資格</label>
+              <select id="adminEligibilityRule">
+                <option value="purchased_member">限有購買紀錄會員</option>
+                <option value="all_members">所有會員皆可</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="adminImageUrl">活動圖片網址（可不填）</label>
+              <input id="adminImageUrl" type="text" placeholder="可填活動主視覺圖片網址">
+            </div>
+
+            <div class="field">
+              <label for="adminRedeemExpireDays">兌換有效天數（0 = 不限）</label>
+              <input id="adminRedeemExpireDays" type="number" min="0" step="1" value="0">
+            </div>
+
+            <div class="field">
+              <label for="adminNotes">備註</label>
+              <textarea id="adminNotes" rows="2" placeholder="內部備註，例如合作對象、活動重點"></textarea>
+            </div>
+
+            <div class="field">
+              <label><input id="adminAutoDraw" type="checkbox" checked> 登記結束後自動抽獎</label>
+            </div>
+
+            <div class="field">
+              <label><input id="adminPublishFlag" type="checkbox" checked> 立即上架讓會員可見</label>
+            </div>
+
+            <div id="adminFormHint" class="help-text">新增活動時，系統會自動建立活動編號並寫入資料庫。</div>
+
+            <div class="admin-toolbar">
+              <button id="adminSaveCampaignBtn" class="btn btn-primary" type="button">儲存活動</button>
+              <button id="adminClearFormBtn" class="btn btn-ghost" type="button">清空表單</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-label" style="color:#6d8382; text-align:center;">現有活動列表</div>
+            <div class="help-text">編輯活動後可立即上架／下架，也可以在截止後按下立即抽獎。</div>
+
+            <div id="campaignAdminList" class="campaign-admin-list">
+              <div class="campaign-empty">活動後台資料載入中...</div>
+            </div>
+          </div>
+        </div>
+
         <div class="footer-text">Guppy vibe, Good be life.</div>
       </div>
     </div>
@@ -1448,6 +1713,7 @@
     let preloadStarted = false;
     let campaignLoaded = false;
     let campaignCenterData = { openCampaigns: [], upcomingCampaigns: [], closedCampaigns: [], winnerRecords: [], activeCampaignCount: 0 };
+    let campaignAdminDashboard = { summary: {}, campaigns: [] };
 
     async function init() {
       try {
@@ -1472,6 +1738,8 @@
           await initStaffRedeemMode(params);
         } else if (act === 'redeem_campaign') {
           await initStaffCampaignRedeemMode(params);
+        } else if (act === 'campaign_admin') {
+          await initCampaignAdminMode(params);
         } else {
           await initMemberMode();
         }
@@ -1486,6 +1754,8 @@
       bindTabActions();
       setActiveTab('home');
       document.getElementById('pendingCouponCountDisplay').innerText = '載入中';
+      const adminBtn = document.getElementById('homeGoCampaignAdminBtn');
+      if (adminBtn) adminBtn.classList.add('hidden');
 
       renderQrCode();
 
@@ -1514,6 +1784,8 @@
       document.getElementById('memberView').classList.remove('hidden');
       document.getElementById('staffView').classList.add('hidden');
       document.getElementById('staffRedeemView').classList.add('hidden');
+      const adminView = document.getElementById('campaignAdminView');
+      if (adminView) adminView.classList.add('hidden');
     }
 
     function bindTabActions() {
@@ -1525,6 +1797,8 @@
       document.getElementById('homeGoLotteryBtn').onclick = () => switchTab('lottery');
       document.getElementById('homeGoCampaignBtn').onclick = () => switchTab('campaigns');
       document.getElementById('homeGoCouponsBtn').onclick = () => switchTab('coupons');
+      const adminBtn = document.getElementById('homeGoCampaignAdminBtn');
+      if (adminBtn) adminBtn.onclick = openCampaignAdminPage;
       document.getElementById('hideCouponQrBtn').onclick = hideCouponQrCard;
       document.getElementById('hideCampaignQrBtn').onclick = hideCampaignQrCard;
 
@@ -2288,6 +2562,11 @@
       const activeCampaignEl = document.getElementById('activeCampaignCountDisplay');
       if (activeCampaignEl && memberData.activeCampaignCount !== undefined) {
         activeCampaignEl.innerText = memberData.activeCampaignCount || 0;
+      }
+
+      const adminBtn = document.getElementById('homeGoCampaignAdminBtn');
+      if (adminBtn) {
+        adminBtn.classList.toggle('hidden', !memberData.isStaff);
       }
 
       const spinBtn = document.getElementById('spinBtn');
@@ -3074,6 +3353,325 @@
         }
       }
     }
+
+
+    function buildActUrl(actValue) {
+      const url = new URL(window.location.href);
+      if (actValue) {
+        url.searchParams.set('act', actValue);
+      } else {
+        url.searchParams.delete('act');
+      }
+      url.searchParams.delete('winnerId');
+      url.searchParams.delete('spinId');
+      url.searchParams.delete('code');
+      url.searchParams.delete('uid');
+      url.searchParams.delete('name');
+      return url.toString();
+    }
+
+    function openCampaignAdminPage() {
+      window.location.href = buildActUrl('campaign_admin');
+    }
+
+    function backToMemberCenter() {
+      window.location.href = buildActUrl('');
+    }
+
+    function showCampaignAdminOnly() {
+      document.getElementById('memberView').classList.add('hidden');
+      document.getElementById('staffView').classList.add('hidden');
+      document.getElementById('staffRedeemView').classList.add('hidden');
+      document.getElementById('campaignAdminView').classList.remove('hidden');
+    }
+
+    async function initCampaignAdminMode() {
+      showCampaignAdminOnly();
+      bindCampaignAdminActions();
+      setDefaultCampaignAdminForm();
+      await loadCampaignAdminDashboard();
+    }
+
+    function bindCampaignAdminActions() {
+      document.getElementById('adminBackToMemberBtn').onclick = backToMemberCenter;
+      document.getElementById('adminRefreshBtn').onclick = () => loadCampaignAdminDashboard(true);
+      document.getElementById('adminCreateNewBtn').onclick = () => setDefaultCampaignAdminForm(true);
+      document.getElementById('adminClearFormBtn').onclick = () => setDefaultCampaignAdminForm(true);
+      document.getElementById('adminSaveCampaignBtn').onclick = saveCampaignAdminForm;
+    }
+
+    function formatDateTimeLocalInput(date) {
+      const d = date instanceof Date ? date : new Date(date);
+      if (Number.isNaN(d.getTime())) return '';
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function setDefaultCampaignAdminForm(forceReset = false) {
+      if (!forceReset && document.getElementById('adminCampaignId').value) return;
+      const now = new Date();
+      const start = new Date(now.getTime() + 60 * 60 * 1000);
+      const end = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+      const draw = new Date(end.getTime() + 60 * 60 * 1000);
+
+      document.getElementById('adminCampaignId').value = '';
+      document.getElementById('adminCampaignName').value = '';
+      document.getElementById('adminCampaignDesc').value = '';
+      document.getElementById('adminPrizeName').value = '';
+      document.getElementById('adminPrizeDesc').value = '';
+      document.getElementById('adminWinnerCount').value = 1;
+      document.getElementById('adminRegisterStartAt').value = formatDateTimeLocalInput(start);
+      document.getElementById('adminRegisterEndAt').value = formatDateTimeLocalInput(end);
+      document.getElementById('adminDrawAt').value = formatDateTimeLocalInput(draw);
+      document.getElementById('adminEligibilityRule').value = 'purchased_member';
+      document.getElementById('adminImageUrl').value = '';
+      document.getElementById('adminRedeemExpireDays').value = 0;
+      document.getElementById('adminNotes').value = '';
+      document.getElementById('adminAutoDraw').checked = true;
+      document.getElementById('adminPublishFlag').checked = true;
+      document.getElementById('adminFormHint').innerText = '新增活動時，系統會自動建立活動編號並寫入資料庫。';
+    }
+
+    function fillCampaignAdminForm(item) {
+      document.getElementById('adminCampaignId').value = item.campaignId || '';
+      document.getElementById('adminCampaignName').value = item.campaignName || '';
+      document.getElementById('adminCampaignDesc').value = item.campaignDesc || '';
+      document.getElementById('adminPrizeName').value = item.prizeName || '';
+      document.getElementById('adminPrizeDesc').value = item.prizeDesc || '';
+      document.getElementById('adminWinnerCount').value = item.winnerCount || 1;
+      document.getElementById('adminRegisterStartAt').value = item.registerStartAtIso || '';
+      document.getElementById('adminRegisterEndAt').value = item.registerEndAtIso || '';
+      document.getElementById('adminDrawAt').value = item.drawAtIso || item.registerEndAtIso || '';
+      document.getElementById('adminEligibilityRule').value = item.eligibilityRule || 'purchased_member';
+      document.getElementById('adminImageUrl').value = item.imageUrl || '';
+      document.getElementById('adminRedeemExpireDays').value = item.redeemExpireDays || 0;
+      document.getElementById('adminNotes').value = item.notes || '';
+      document.getElementById('adminAutoDraw').checked = !!item.autoDraw;
+      document.getElementById('adminPublishFlag').checked = !!item.publishFlag;
+      document.getElementById('adminFormHint').innerText = `目前正在編輯：${item.campaignName || ''}（${item.campaignId || ''}）`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function collectCampaignAdminFormPayload() {
+      return {
+        campaignId: document.getElementById('adminCampaignId').value.trim(),
+        campaignName: document.getElementById('adminCampaignName').value.trim(),
+        campaignDesc: document.getElementById('adminCampaignDesc').value.trim(),
+        prizeName: document.getElementById('adminPrizeName').value.trim(),
+        prizeDesc: document.getElementById('adminPrizeDesc').value.trim(),
+        winnerCount: Number(document.getElementById('adminWinnerCount').value || 1),
+        registerStartAt: document.getElementById('adminRegisterStartAt').value,
+        registerEndAt: document.getElementById('adminRegisterEndAt').value,
+        drawAt: document.getElementById('adminDrawAt').value,
+        eligibilityRule: document.getElementById('adminEligibilityRule').value,
+        imageUrl: document.getElementById('adminImageUrl').value.trim(),
+        redeemExpireDays: Number(document.getElementById('adminRedeemExpireDays').value || 0),
+        notes: document.getElementById('adminNotes').value.trim(),
+        autoDraw: document.getElementById('adminAutoDraw').checked,
+        publishFlag: document.getElementById('adminPublishFlag').checked
+      };
+    }
+
+    async function postAdminAction(action, payload) {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action,
+          staffId: currentProfile.userId,
+          staffName: currentProfile.displayName,
+          ...payload
+        })
+      });
+      return await res.json();
+    }
+
+    function renderCampaignAdminSummary(summary) {
+      document.getElementById('adminTotalCampaignsDisplay').innerText = summary.totalCampaigns || 0;
+      document.getElementById('adminOpenCampaignsDisplay').innerText = summary.openCount || 0;
+      document.getElementById('adminAwaitingCampaignsDisplay').innerText = summary.awaitingDrawCount || 0;
+      document.getElementById('adminPendingRedeemDisplay').innerText = summary.pendingRedeemCount || 0;
+    }
+
+    function buildCampaignAdminCard(item) {
+      const wrap = document.createElement('div');
+      wrap.className = 'campaign-admin-card';
+
+      const publishText = item.publishFlag ? '已發布' : '未發布';
+      const closeBtnDisabled = item.effectiveStatus === 'drawn' || item.effectiveStatus === 'cancelled';
+      const drawBtnDisabled = item.effectiveStatus === 'drawn' || item.effectiveStatus === 'hidden' || item.effectiveStatus === 'cancelled';
+
+      wrap.innerHTML = `
+        <div class="campaign-admin-top">
+          <div>
+            <span class="campaign-admin-id">${escapeHtml(item.campaignId || '')}</span>
+            <div class="campaign-admin-title">${escapeHtml(item.campaignName || '')}</div>
+            <div class="campaign-admin-desc">${escapeHtml(item.campaignDesc || '—')}</div>
+          </div>
+          <div>${renderCampaignBadge(item)}</div>
+        </div>
+
+        <div class="campaign-chip-row">
+          <span class="campaign-chip">🎁 ${escapeHtml(item.prizeName || '')}</span>
+          <span class="campaign-chip">👥 ${item.winnerCount || 1} 名</span>
+          <span class="campaign-chip">${item.autoDraw ? '⏰ 自動抽獎' : '🖐 手動抽獎'}</span>
+          <span class="campaign-chip">${publishText}</span>
+        </div>
+
+        <div class="campaign-admin-grid">
+          <div class="campaign-admin-stat">登記人數<strong>${item.registrantCount || 0}</strong></div>
+          <div class="campaign-admin-stat">得獎紀錄<strong>${item.winnerRecordCount || 0}</strong></div>
+          <div class="campaign-admin-stat">待核銷<strong>${item.pendingRedeemCount || 0}</strong></div>
+          <div class="campaign-admin-stat">目前狀態<strong>${escapeHtml(item.effectiveStatusText || '')}</strong></div>
+        </div>
+
+        <div class="admin-status-line">
+          登記期間：${escapeHtml(item.registerStartAt || '未設定')} ～ ${escapeHtml(item.registerEndAt || '未設定')}<br>
+          抽獎時間：${escapeHtml(item.drawAt || '未設定')}<br>
+          ${item.lastDrawResult ? `最近抽獎結果：${escapeHtml(item.lastDrawResult)}` : '尚未執行抽獎'}
+        </div>
+
+        <div class="campaign-admin-actions">
+          <button class="admin-action-btn primary" data-admin-edit="${escapeHtml(item.campaignId || '')}">編輯</button>
+          <button class="admin-action-btn" data-admin-publish="${escapeHtml(item.campaignId || '')}">${item.publishFlag ? '下架' : '發布'}</button>
+          <button class="admin-action-btn warn" ${closeBtnDisabled ? 'disabled' : ''} data-admin-close="${escapeHtml(item.campaignId || '')}">立即截止</button>
+          <button class="admin-action-btn danger" ${drawBtnDisabled ? 'disabled' : ''} data-admin-draw="${escapeHtml(item.campaignId || '')}">立即抽獎</button>
+        </div>
+      `;
+
+      const editBtn = wrap.querySelector('[data-admin-edit]');
+      if (editBtn) editBtn.onclick = () => fillCampaignAdminForm(item);
+
+      const publishBtn = wrap.querySelector('[data-admin-publish]');
+      if (publishBtn) publishBtn.onclick = () => toggleCampaignPublish(item);
+
+      const closeBtn = wrap.querySelector('[data-admin-close]');
+      if (closeBtn && !closeBtn.disabled) closeBtn.onclick = () => closeCampaignRegistration(item);
+
+      const drawBtn = wrap.querySelector('[data-admin-draw]');
+      if (drawBtn && !drawBtn.disabled) drawBtn.onclick = () => drawCampaignNow(item);
+
+      return wrap;
+    }
+
+    function renderCampaignAdminList(items) {
+      const list = document.getElementById('campaignAdminList');
+      list.innerHTML = '';
+      if (!items || !items.length) {
+        list.innerHTML = '<div class="campaign-empty">目前尚未建立任何活動</div>';
+        return;
+      }
+      items.forEach(item => list.appendChild(buildCampaignAdminCard(item)));
+    }
+
+    async function loadCampaignAdminDashboard(force = false) {
+      document.getElementById('campaignAdminList').innerHTML = '<div class="campaign-empty">活動後台資料載入中...</div>';
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=campaign_admin_dashboard&staffId=${encodeURIComponent(currentProfile.userId)}&staffName=${encodeURIComponent(currentProfile.displayName)}&t=${force ? Date.now() : ''}`);
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.message || '載入活動管理後台失敗');
+          if (data.message === 'NO_PERMISSION') backToMemberCenter();
+          return;
+        }
+        campaignAdminDashboard = data;
+        renderCampaignAdminSummary(data.summary || {});
+        renderCampaignAdminList(data.campaigns || []);
+      } catch (err) {
+        console.error(err);
+        alert('載入活動管理後台失敗');
+      }
+    }
+
+    async function saveCampaignAdminForm() {
+      const btn = document.getElementById('adminSaveCampaignBtn');
+      const payload = collectCampaignAdminFormPayload();
+      if (!payload.campaignName) {
+        alert('請先填寫活動名稱');
+        return;
+      }
+      if (!payload.prizeName) {
+        alert('請先填寫獎品名稱');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = '儲存中...';
+      try {
+        const result = await postAdminAction('campaign_admin_save', payload);
+        if (!result.ok) {
+          alert(result.message || '儲存活動失敗');
+          return;
+        }
+        alert(result.message || '活動已儲存');
+        await loadCampaignAdminDashboard(true);
+        const saved = (campaignAdminDashboard.campaigns || []).find(item => item.campaignId === result.campaignId);
+        if (saved) fillCampaignAdminForm(saved);
+      } catch (err) {
+        console.error(err);
+        alert('儲存活動失敗');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '儲存活動';
+      }
+    }
+
+    async function toggleCampaignPublish(item) {
+      const yes = confirm(`確認要${item.publishFlag ? '下架' : '發布'}「${item.campaignName}」嗎？`);
+      if (!yes) return;
+      try {
+        const result = await postAdminAction('campaign_admin_toggle_publish', {
+          campaignId: item.campaignId,
+          publishFlag: !item.publishFlag
+        });
+        if (!result.ok) {
+          alert(result.message || '更新活動發布狀態失敗');
+          return;
+        }
+        await loadCampaignAdminDashboard(true);
+      } catch (err) {
+        console.error(err);
+        alert('更新活動發布狀態失敗');
+      }
+    }
+
+    async function closeCampaignRegistration(item) {
+      const yes = confirm(`確認立即截止「${item.campaignName}」的活動登記嗎？`);
+      if (!yes) return;
+      try {
+        const result = await postAdminAction('campaign_admin_close_registration', {
+          campaignId: item.campaignId
+        });
+        if (!result.ok) {
+          alert(result.message || '活動截止失敗');
+          return;
+        }
+        alert(result.message || '已截止登記');
+        await loadCampaignAdminDashboard(true);
+      } catch (err) {
+        console.error(err);
+        alert('活動截止失敗');
+      }
+    }
+
+    async function drawCampaignNow(item) {
+      const yes = confirm(`確認立即抽出「${item.campaignName}」的得獎者嗎？`);
+      if (!yes) return;
+      try {
+        const result = await postAdminAction('campaign_draw_now', {
+          campaignId: item.campaignId
+        });
+        if (!result.ok) {
+          alert(result.message || '抽獎失敗');
+          return;
+        }
+        alert(`${result.message || '活動抽獎完成'}\n登記人數：${result.registrantCount || 0}\n中獎人數：${result.winnerCount || 0}`);
+        await loadCampaignAdminDashboard(true);
+      } catch (err) {
+        console.error(err);
+        alert('抽獎失敗');
+      }
+    }
+
 
     function escapeHtml(str) {
       return String(str || '')
