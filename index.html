@@ -4317,14 +4317,37 @@
     async function loadCampaignAdminDashboard(force = false) {
       document.getElementById('campaignAdminList').innerHTML = '<div class="campaign-empty">主控台資料載入中...</div>';
       try {
-        const data = await fetchJson('campaign_admin_bootstrap', {
-          staffId: currentProfile.userId,
-          staffName: currentProfile.displayName
-        }, force);
+        let data = null;
+        let usedBootstrap = false;
 
-        if (!data.ok) {
-          alert(data.message || '載入管理員主控台失敗');
-          if (data.message === 'NO_PERMISSION') backToMemberCenter();
+        try {
+          const bootstrapData = await fetchJson('campaign_admin_bootstrap', {
+            staffId: currentProfile.userId,
+            staffName: currentProfile.displayName
+          }, force);
+
+          if (bootstrapData && bootstrapData.ok && Array.isArray(bootstrapData.campaigns)) {
+            data = bootstrapData;
+            usedBootstrap = true;
+          } else if (bootstrapData && bootstrapData.message === 'NO_PERMISSION') {
+            alert(bootstrapData.message || '載入管理員主控台失敗');
+            backToMemberCenter();
+            return;
+          }
+        } catch (bootstrapErr) {
+          console.warn('campaign_admin_bootstrap failed, fallback to dashboard API', bootstrapErr);
+        }
+
+        if (!data) {
+          data = await fetchJson('campaign_admin_dashboard', {
+            staffId: currentProfile.userId,
+            staffName: currentProfile.displayName
+          }, force);
+        }
+
+        if (!data || !data.ok) {
+          alert((data && data.message) || '載入管理員主控台失敗');
+          if (data && data.message === 'NO_PERMISSION') backToMemberCenter();
           return;
         }
 
@@ -4336,13 +4359,13 @@
         const availableIds = new Set((data.campaigns || []).map(item => item.campaignId));
         const preferredId = selectedAdminCampaignId && availableIds.has(selectedAdminCampaignId)
           ? selectedAdminCampaignId
-          : (data.initialCampaignId || ((data.campaigns || [])[0] && data.campaigns[0].campaignId) || '');
+          : ((usedBootstrap ? data.initialCampaignId : '') || ((data.campaigns || [])[0] && data.campaigns[0].campaignId) || '');
 
-        if (data.initialDetail && data.initialDetail.ok && preferredId === (data.initialCampaignId || '')) {
+        if (usedBootstrap && data.initialDetail && data.initialDetail.ok && preferredId === (data.initialCampaignId || '')) {
           campaignAdminDetailMemoryCache[preferredId] = data.initialDetail;
           renderCampaignDashboardDetail(data.initialDetail);
         } else if (preferredId) {
-          loadCampaignAdminDetail(preferredId, force);
+          await loadCampaignAdminDetail(preferredId, force);
         } else {
           renderCampaignDashboardDetail(null);
         }
